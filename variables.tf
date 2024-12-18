@@ -25,3 +25,7 @@ variable "vpc_config" {
     public_subnets  = ["192.168.0.0/19", "192.168.32.0/19"]
   }
 }
+
+variable "eks_cluster_name" {
+  default = "yuki-proxy"
+}
