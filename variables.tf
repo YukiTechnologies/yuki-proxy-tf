@@ -3,10 +3,6 @@ variable "aws" {
     profile = string
     region = string
   })
-  default = {
-    profile = "default"
-    region = "us-east-1"
-  }
 }
 
 variable "vpc_config" {
