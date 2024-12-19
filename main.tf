@@ -92,3 +92,15 @@ module "yuki_proxy_disabled" {
   elastic_cache_endpoint_url = module.elastic_cache.endpoint_url
   depends_on = [module.ingress_class, module.elastic_cache]
 }
+
+module "data_dog" {
+  source = "./modules/data-dog-agent"
+  cluster_name = var.eks_cluster_name
+  dd_api_key = var.dd_api_key
+  providers = {
+    aws = aws.default
+    kubernetes = kubernetes.static
+    helm = helm.static
+  }
+  depends_on = [module.yuki_proxy_enabled,module.yuki_proxy_disabled]
+}
