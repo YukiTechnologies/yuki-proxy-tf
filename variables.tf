@@ -26,6 +26,44 @@ variable "vpc_config" {
   }
 }
 
+variable "create_vpc_peering" {
+  type = bool
+  default = false
+}
+
 variable "eks_cluster_name" {
   default = "yuki-proxy"
+}
+
+variable "ingress_class_name" {
+  type = string
+  default = "yuki-proxy-ingress-class"
+}
+
+variable "container_image" {
+  type = string
+  default = "[PROXY_IMAGE]"
+}
+
+variable "dd_api_key" {
+  type = string
+  default = "[DD_API_KEY]"
+}
+
+variable "certificate_arn" {
+  type = string
+  default = ""
+}
+
+variable "proxy_environment_variables" {
+  description = "Environment variables for proxy deployment"
+  type        = map(string)
+  default     = {
+    PROXY_HOST   = "[PROXY_HOST]"
+    COMPUTE_HOST = "https://prod.yukicomputing.com"
+    SYSTEM_HOST  = "https://prod.yukicomputing.com"
+    COMPANY_GUID = "[COMPANY_GUID]"
+    ORG_GUID     = "[ORG_GUID]"
+    ACCOUNT_GUID = "[ACCOUNT_GUID]"
+  }
 }
