@@ -37,6 +37,7 @@ module "eks" {
   vpc_id                   = var.vpc_id
   subnet_ids               = var.private_subnets
   control_plane_subnet_ids = var.private_subnets
+  create_node_security_group = false
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_ARM_64"
