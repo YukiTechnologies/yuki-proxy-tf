@@ -8,7 +8,7 @@ variable "main_region" {
 
 variable "env_name" {
   type    = string
-  default = "yuki-proxy"
+  default = "proxy"
 }
 
 variable "cluster_name" {
