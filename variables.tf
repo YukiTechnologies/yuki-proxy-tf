@@ -28,7 +28,22 @@ variable "vpc_config" {
 
 variable "create_vpc_peering" {
   type = bool
-  default = false
+  default = true
+}
+
+variable "client_vpc_config" {
+  type = object({
+    id = string
+    cidr_blocks = list(string)
+    route_53_zone_name = string
+    route_table_ids = list(string)
+  })
+  default = {
+    id = "vpc-1"
+    cidr_blocks = ["10.0.0.0/16"]
+    route_53_zone_name = "isay.yuki-testing.com"
+    route_table_ids = [""]
+  }
 }
 
 variable "eks_cluster_name" {

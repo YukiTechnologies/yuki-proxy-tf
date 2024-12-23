@@ -104,3 +104,20 @@ module "data_dog" {
   }
   depends_on = [module.yuki_proxy_enabled,module.yuki_proxy_disabled]
 }
+
+module "yuki_vpc_peering" {
+  count = var.create_vpc_peering ? 1 : 0
+  source = "./modules/vpc-peering"
+  providers = {
+    aws = aws.default
+  }
+  client_vpc_config                     = var.client_vpc_config
+  yuki_vpc_id                           = module.vpc.vpc_id
+  yuki_vpc_cidr                         = module.vpc.vpc_cidr_block
+  yuki_vpc_azs                          = var.vpc_config.azs 
+  yuki_vpc_default_security_group_id    = module.vpc.vpc_default_security_group_id
+  yuki_vpc_private_route_table_ids      = module.vpc.private_route_table_ids
+  yuki_vpc_public_route_table_ids       = module.vpc.public_route_table_ids
+  yuki_vpc_main_route_table_ids         = module.vpc.main_route_table_id
+  depends_on = [module.vpc]
+}
