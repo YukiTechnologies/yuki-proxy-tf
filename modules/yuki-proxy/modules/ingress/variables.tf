@@ -33,3 +33,16 @@ variable "path" {
 variable "create_private_load_balancers" {
   type = bool
 }
+
+variable "public_domain" {
+  type = object({
+    name = string
+    identifier = string
+    type = string
+    health_check_id = string
+  })
+}
+
+variable "private_domain_name" {
+  type = string
+}

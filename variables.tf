@@ -46,6 +46,16 @@ variable "client_vpc_config" {
   }
 }
 
+variable "public_domain_name" {
+  type = string
+  default = "yuki.example.com"
+}
+
+variable "private_domain_name" {
+  type = string
+  default = "yuki.example.com"
+}
+
 variable "eks_cluster_name" {
   default = "yuki-proxy"
 }

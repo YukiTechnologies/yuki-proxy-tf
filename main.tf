@@ -51,12 +51,28 @@ module "elastic_cache" {
   security_group        = module.vpc.vpc_default_security_group_id
 }
 
+resource "aws_route53_health_check" "primary_lb_health_check" {
+  fqdn                          = var.public_domain_name
+  type                          = "HTTPS"
+  resource_path                 = "/"
+  failure_threshold             = 1
+  request_interval              = 10
+  port                          = 443
+}
+
 module "yuki_proxy_enabled" {
   source = "./modules/yuki-proxy"
 
   namespace = "yuki-proxy-enabled"
   load_balancer_name = "enab-yuki-proxy-lb"
   ingress_name = "enab-yuki-proxy-ingress"
+  private_domain_name = var.private_domain_name
+  public_domain     = {
+    name = var.public_domain_name
+    identifier = "Primary"
+    type = "PRIMARY"
+    health_check_id = aws_route53_health_check.primary_lb_health_check.id
+  }
   create_private_load_balancers = var.create_vpc_peering
   container_image             = var.container_image
   certificate_arn             = var.certificate_arn
@@ -79,6 +95,13 @@ module "yuki_proxy_disabled" {
   load_balancer_name = "dis-yuki-proxy-lb"
   ingress_name = "dis-yuki-proxy-ingress"
   create_private_load_balancers = false
+  private_domain_name = var.private_domain_name
+  public_domain     = {
+    name = var.public_domain_name
+    identifier = "Secondary"
+    type = "SECONDARY"
+    health_check_id = "none"
+  }
   container_image             = var.container_image
   certificate_arn             = var.certificate_arn
   ingress_class_name          = var.ingress_class_name

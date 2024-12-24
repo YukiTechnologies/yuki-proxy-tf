@@ -24,6 +24,8 @@ module "yuki_proxy_ingress" {
   app_name            = var.app_name
   app_port            = var.app_port
   namespace           = var.namespace
+  private_domain_name = var.private_domain_name
+  public_domain       = var.public_domain
   create_private_load_balancers = var.create_private_load_balancers
   load_balancer_name  = var.load_balancer_name
   certificate_arn     = var.certificate_arn

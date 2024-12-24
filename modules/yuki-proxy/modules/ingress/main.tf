@@ -18,6 +18,7 @@ resource "kubernetes_ingress_v1" "ingress" {
       "alb.ingress.kubernetes.io/healthy-threshold-count" : "2"
       "alb.ingress.kubernetes.io/unhealthy-threshold-count" : "2"
       "alb.ingress.kubernetes.io/tags" : "Environment=prod,OwnedBy=yuki-proxy"
+      "external-dns.alpha.kubernetes.io/hostname": var.private_domain_name
     }
   }
 
@@ -61,6 +62,10 @@ resource "kubernetes_ingress_v1" "internet_ingress" {
       "alb.ingress.kubernetes.io/healthy-threshold-count" : "2"
       "alb.ingress.kubernetes.io/unhealthy-threshold-count" : "2"
       "alb.ingress.kubernetes.io/tags" : "Environment=prod,OwnedBy=yuki-proxy"
+      "external-dns.alpha.kubernetes.io/hostname": var.public_domain.name
+      "external-dns.alpha.kubernetes.io/set-identifier": var.public_domain.identifier
+      "external-dns.alpha.kubernetes.io/aws-failover": var.public_domain.type
+      "external-dns.alpha.kubernetes.io/aws-health-check-id": var.public_domain.health_check_id
     }
   }
 
