@@ -18,6 +18,16 @@ resource "kubernetes_namespace" "namespace" {
   }
 }
 
+module "service_account" {
+  source = "./modules/service-account"
+
+  namespace            = var.namespace
+  oidc_provider_arn    = var.oidc_provider_arn
+  role_name            = "${var.namespace}-dns-role"
+  service_account_name = "${var.namespace}-dns-sa"
+  depends_on = [kubernetes_namespace.namespace]
+}
+
 module "yuki_proxy_ingress" {
   source = "./modules/ingress"
 

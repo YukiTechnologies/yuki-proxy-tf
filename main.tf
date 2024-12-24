@@ -73,6 +73,7 @@ module "yuki_proxy_enabled" {
     type = "PRIMARY"
     health_check_id = aws_route53_health_check.primary_lb_health_check.id
   }
+  oidc_provider_arn = module.eks.oidc_provider_arn
   create_private_load_balancers = var.create_vpc_peering
   container_image             = var.container_image
   certificate_arn             = var.certificate_arn
@@ -102,6 +103,7 @@ module "yuki_proxy_disabled" {
     type = "SECONDARY"
     health_check_id = "none"
   }
+  oidc_provider_arn = module.eks.oidc_provider_arn
   container_image             = var.container_image
   certificate_arn             = var.certificate_arn
   ingress_class_name          = var.ingress_class_name
