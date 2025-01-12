@@ -6,7 +6,7 @@ terraform {
   }
 }
 
-resource "aws_route53_zone" "public_zone" {
+data "aws_route53_zone" "public_zone" {
   name = var.public_domain.route53_zone
 }
 
@@ -28,7 +28,7 @@ resource "aws_route53_health_check" "primary_lb_health_check" {
 }
 
 resource "aws_route53_record" "primary_dns_record" {
-  zone_id = aws_route53_zone.public_zone.zone_id
+  zone_id = data.aws_route53_zone.public_zone.zone_id
   name    = var.public_domain.domain_name
   type    = "A"
 
@@ -45,7 +45,7 @@ resource "aws_route53_record" "primary_dns_record" {
 }
 
 resource "aws_route53_record" "secondary_dns_record" {
-  zone_id = aws_route53_zone.public_zone.zone_id
+  zone_id = data.aws_route53_zone.public_zone.zone_id
   name    = var.public_domain.domain_name
   type    = "A"
 

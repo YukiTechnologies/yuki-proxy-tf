@@ -6,7 +6,7 @@ terraform {
   }
 }
 
-resource "aws_route53_zone" "private_zone" {
+data "aws_route53_zone" "private_zone" {
   name = var.private_domain.route53_zone
 }
 
@@ -15,7 +15,7 @@ data "aws_lb" "private_enabled_lb" {
 }
 
 resource "aws_route53_record" "alb_dns_record" {
-  zone_id = aws_route53_zone.private_zone.zone_id
+  zone_id = data.aws_route53_zone.private_zone.zone_id
   name    = var.private_domain.domain_name
   type    = "A"
 
