@@ -37,12 +37,14 @@ variable "client_vpc_config" {
     cidr_blocks = list(string)
     route_53_zone_name = string
     route_table_ids = list(string)
+    private_domain_name = string
   })
   default = {
     id = "vpc-1"
     cidr_blocks = ["10.0.0.0/16"]
-    route_53_zone_name = "isay.yuki-testing.com"
+    route_53_zone_name = "private.example.com"
     route_table_ids = [""]
+    private_domain_name = "private.example.com"
   }
 }
 
@@ -68,6 +70,17 @@ variable "dd_api_key" {
 variable "certificate_arn" {
   type = string
   default = ""
+}
+
+variable "public_domain" {
+  type = object({
+    name = string
+    route53_zone = string
+  })
+  default = {
+    name = "app.example.com"
+    route53_zone = "example.com"
+  }
 }
 
 variable "proxy_environment_variables" {

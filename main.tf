@@ -121,3 +121,31 @@ module "yuki_vpc_peering" {
   yuki_vpc_main_route_table_ids         = module.vpc.main_route_table_id
   depends_on = [module.vpc]
 }
+
+module "private_dns_record" {
+  count = var.create_vpc_peering ? 1 : 0
+  source = "./modules/private-dns-record"
+  providers = {
+    aws = aws.default
+  }
+  private_domain = {
+    domain_name     = var.client_vpc_config.private_domain_name
+    route53_zone    = var.client_vpc_config.route_53_zone_name
+    load_balancer_name = "enab-yuki-proxy-lb"
+  }
+  depends_on = [module.yuki_proxy_enabled, module.yuki_proxy_disabled, module.yuki_vpc_peering]
+}
+
+module "public_dns_record" {
+  source = "./modules/public-dns-record"
+  providers = {
+    aws = aws.default
+  }
+  public_domain = {
+    domain_name     = var.public_domain.name
+    route53_zone    = var.public_domain.route53_zone
+    enabale_load_balancer_name = "pub-enab-yuki-proxy-lb"
+    disabled_load_balancer_name = "pub-dis-yuki-proxy-lb"
+  }
+  depends_on = [module.yuki_proxy_enabled, module.yuki_proxy_disabled]
+}
