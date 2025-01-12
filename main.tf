@@ -58,8 +58,9 @@ module "yuki_proxy_enabled" {
   load_balancer_name = "enab-yuki-proxy-lb"
   ingress_name = "enab-yuki-proxy-ingress"
   create_private_load_balancers = var.create_vpc_peering
+  private_certificate_arn     = var.client_vpc_config.certificate_arn
+  public_certificate_arn      = var.public_domain.certificate_arn
   container_image             = var.container_image
-  certificate_arn             = var.certificate_arn
   ingress_class_name          = var.ingress_class_name
   proxy_environment_variables = var.proxy_environment_variables
   proxy_enabled = "true"
@@ -79,8 +80,9 @@ module "yuki_proxy_disabled" {
   load_balancer_name = "dis-yuki-proxy-lb"
   ingress_name = "dis-yuki-proxy-ingress"
   create_private_load_balancers = false
+  private_certificate_arn     = var.client_vpc_config.certificate_arn
+  public_certificate_arn      = var.public_domain.certificate_arn
   container_image             = var.container_image
-  certificate_arn             = var.certificate_arn
   ingress_class_name          = var.ingress_class_name
   proxy_environment_variables = var.proxy_environment_variables
   proxy_enabled = "false"

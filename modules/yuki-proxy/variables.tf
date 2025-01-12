@@ -2,7 +2,11 @@ variable "container_image" {
   type = string
 }
 
-variable "certificate_arn" {
+variable "public_certificate_arn" {
+  type = string
+}
+
+variable "private_certificate_arn" {
   type = string
 }
 

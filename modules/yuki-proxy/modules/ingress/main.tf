@@ -8,7 +8,7 @@ resource "kubernetes_ingress_v1" "ingress" {
       "alb.ingress.kubernetes.io/load-balancer-name" : var.load_balancer_name
       "alb.ingress.kubernetes.io/scheme" : "internal"
       "alb.ingress.kubernetes.io/listen-ports" : "[{\"HTTPS\":443}, {\"HTTP\":80}]"
-      "alb.ingress.kubernetes.io/certificate-arn" : var.certificate_arn
+      "alb.ingress.kubernetes.io/certificate-arn" : var.private_certificate_arn
       "alb.ingress.kubernetes.io/ssl-redirect" : "443"
       "alb.ingress.kubernetes.io/healthcheck-protocol" : "HTTP"
       "alb.ingress.kubernetes.io/healthcheck-port" : "traffic-port"
@@ -52,7 +52,7 @@ resource "kubernetes_ingress_v1" "internet_ingress" {
       "alb.ingress.kubernetes.io/load-balancer-name" : "pub-${var.load_balancer_name}"
       "alb.ingress.kubernetes.io/scheme" : "internet-facing"
       "alb.ingress.kubernetes.io/listen-ports" : "[{\"HTTPS\":443}, {\"HTTP\":80}]"
-      "alb.ingress.kubernetes.io/certificate-arn" : var.certificate_arn
+      "alb.ingress.kubernetes.io/certificate-arn" : var.public_certificate_arn
       "alb.ingress.kubernetes.io/ssl-redirect" : "443"
       "alb.ingress.kubernetes.io/healthcheck-protocol" : "HTTP"
       "alb.ingress.kubernetes.io/healthcheck-port" : "traffic-port"

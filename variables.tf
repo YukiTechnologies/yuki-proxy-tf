@@ -38,6 +38,7 @@ variable "client_vpc_config" {
     route_53_zone_name = string
     route_table_ids = list(string)
     private_domain_name = string
+    certificate_arn = string
   })
   default = {
     id = "vpc-1"
@@ -45,6 +46,7 @@ variable "client_vpc_config" {
     route_53_zone_name = "private.example.com"
     route_table_ids = [""]
     private_domain_name = "private.example.com"
+    certificate_arn = ""
   }
 }
 
@@ -67,19 +69,16 @@ variable "dd_api_key" {
   default = ""
 }
 
-variable "certificate_arn" {
-  type = string
-  default = ""
-}
-
 variable "public_domain" {
   type = object({
     name = string
     route53_zone = string
+    certificate_arn = string
   })
   default = {
     name = "app.example.com"
     route53_zone = "example.com"
+    certificate_arn = ""
   }
 }
 

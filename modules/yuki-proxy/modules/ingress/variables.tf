@@ -22,7 +22,11 @@ variable "load_balancer_name" {
   type = string
 }
 
-variable "certificate_arn" {
+variable "private_certificate_arn" {
+  type = string
+}
+
+variable "public_certificate_arn" {
   type = string
 }
 
