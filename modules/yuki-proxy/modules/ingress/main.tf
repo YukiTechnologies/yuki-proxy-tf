@@ -1,5 +1,5 @@
 resource "kubernetes_ingress_v1" "ingress" {
-  count = var.create_private_load_balancers ? 1 : 0
+  # count = var.create_private_load_balancers ? 1 : 0
   metadata {
     name        = var.ingress_name
     namespace   = var.namespace
