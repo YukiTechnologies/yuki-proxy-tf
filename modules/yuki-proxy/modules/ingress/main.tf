@@ -1,5 +1,6 @@
 resource "kubernetes_ingress_v1" "ingress" {
-  # count = var.create_private_load_balancers ? 1 : 0
+  count = var.create_private_load_balancers ? 1 : 0
+  wait_for_load_balancer = true
   metadata {
     name        = var.ingress_name
     namespace   = var.namespace
@@ -43,6 +44,7 @@ resource "kubernetes_ingress_v1" "ingress" {
 }
 
 resource "kubernetes_ingress_v1" "internet_ingress" {
+  wait_for_load_balancer = true
   metadata {
     name        = "pub-${var.ingress_name}"
     namespace   = var.namespace
