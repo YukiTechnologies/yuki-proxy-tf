@@ -8,6 +8,7 @@ terraform {
 
 data "aws_route53_zone" "private_zone" {
   name = var.private_domain.route53_zone
+  private_zone  = true
 }
 
 data "aws_lb" "private_enabled_lb" {
