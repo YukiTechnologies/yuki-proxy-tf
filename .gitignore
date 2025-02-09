@@ -3,3 +3,4 @@
 .terraform
 .terraform.tfstate.lock.info
 terraform.tfstate
+.DS_Store

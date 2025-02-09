@@ -79,7 +79,7 @@ module "yuki_proxy_disabled" {
   namespace = "yuki-proxy-disabled"
   load_balancer_name = "dis-yuki-proxy-lb"
   ingress_name = "dis-yuki-proxy-ingress"
-  create_private_load_balancers = false
+  create_private_load_balancers = var.create_vpc_peering
   private_certificate_arn     = var.client_vpc_config.certificate_arn
   public_certificate_arn      = var.public_domain.certificate_arn
   container_image             = var.container_image
