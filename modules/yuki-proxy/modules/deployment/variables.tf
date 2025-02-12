@@ -33,3 +33,7 @@ variable "proxy_environment_variables" {
 variable "elastic_cache_endpoint" {
   type = string
 }
+
+variable "redis_key_name" {
+  type = string
+}

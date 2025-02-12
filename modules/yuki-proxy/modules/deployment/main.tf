@@ -6,7 +6,7 @@ resource "random_password" "secret_password" {
 
 resource "kubernetes_secret" "redis_key" {
   metadata {
-    name = "redis-encryption-key"
+    name = var.redis_key_name
     namespace = var.namespace
   }
 

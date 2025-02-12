@@ -20,21 +20,21 @@ resource "kubernetes_namespace" "namespace" {
 
 locals {
   nginx_proxy         = "nginx-proxy"
-  enabled_proxy_name  = "yuki-proxy-enabled"
-  disabled_proxy_name = "yuki-proxy-disabled"
+  enabled_proxy  = "yuki-proxy-enabled"
+  disabled_proxy = "yuki-proxy-disabled"
   nginx_port          = "80"
 }
 
 module "nginx_proxy" {
-  source = "./modules/nginx-proxy"
+  source       = "./modules/nginx-proxy"
   namespace    = var.namespace
   service_name = local.nginx_proxy
   proxy_disabled = {
-    host = local.enabled_proxy_name
+    host = local.disabled_proxy
     port = var.app_port
   }
   proxy_enabled = {
-    host = local.disabled_proxy_name
+    host = local.enabled_proxy
     port = var.app_port
   }
   depends_on = [kubernetes_namespace.namespace]
@@ -62,7 +62,7 @@ module "yuki_enabled_proxy_service" {
 
   namespace = var.namespace
   app_group = var.app_group
-  app_name  = local.enabled_proxy_name
+  app_name  = local.enabled_proxy
   app_port  = var.app_port
   depends_on = [kubernetes_namespace.namespace]
 }
@@ -72,7 +72,7 @@ module "yuki_disabled_proxy_service" {
 
   namespace = var.namespace
   app_group = var.app_group
-  app_name  = local.disabled_proxy_name
+  app_name  = local.disabled_proxy
   app_port  = var.app_port
   depends_on = [kubernetes_namespace.namespace]
 }
@@ -82,13 +82,14 @@ module "yuki_enabled_proxy_deployment" {
 
   namespace                   = var.namespace
   app_group                   = var.app_group
-  app_name                    = local.enabled_proxy_name
+  app_name                    = local.enabled_proxy
   app_port                    = var.app_port
   container_image             = var.container_image
   deployment_replicas         = var.deployment_replicas
   proxy_enabled               = "true"
   proxy_environment_variables = var.proxy_environment_variables
   elastic_cache_endpoint      = var.elastic_cache_endpoint_url
+  redis_key_name              = "enb-redis-encryption-key"
 
   depends_on = [kubernetes_namespace.namespace]
 }
@@ -98,14 +99,14 @@ module "yuki_disabled_proxy_deployment" {
 
   namespace                   = var.namespace
   app_group                   = var.app_group
-  app_name                    = local.disabled_proxy_name
+  app_name                    = local.disabled_proxy
   app_port                    = var.app_port
   container_image             = var.container_image
   deployment_replicas         = var.deployment_replicas
   proxy_enabled               = "false"
   proxy_environment_variables = var.proxy_environment_variables
   elastic_cache_endpoint      = var.elastic_cache_endpoint_url
-
+  redis_key_name              = "dis-redis-encryption-key"
   depends_on = [kubernetes_namespace.namespace]
 }
 
@@ -113,6 +114,6 @@ module "yuki_enabled_proxy_hpa" {
   source = "./modules/hpa"
 
   namespace = var.namespace
-  app_name  = local.enabled_proxy_name
+  app_name  = local.enabled_proxy
   depends_on = [kubernetes_namespace.namespace]
 }
