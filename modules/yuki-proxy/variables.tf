@@ -30,18 +30,9 @@ variable "ingress_name" {
   type = string
 }
 
-variable "proxy_enabled" {
-  type = string
-}
-
 variable "app_group" {
   type = string
   default = "default-app-group"
-}
-
-variable "app_name" {
-  type = string
-  default = "yuki-proxy"
 }
 
 variable "app_port" {

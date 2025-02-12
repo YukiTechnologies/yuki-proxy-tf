@@ -51,46 +51,27 @@ module "elastic_cache" {
   security_group        = module.vpc.vpc_default_security_group_id
 }
 
-module "yuki_proxy_enabled" {
-  source = "./modules/yuki-proxy"
-
-  namespace = "yuki-proxy-enabled"
-  load_balancer_name = "enab-yuki-proxy-lb"
-  ingress_name = "enab-yuki-proxy-ingress"
-  create_private_load_balancers = var.create_vpc_peering
-  private_certificate_arn     = var.client_vpc_config.certificate_arn
-  public_certificate_arn      = var.public_domain.certificate_arn
-  container_image             = var.container_image
-  ingress_class_name          = var.ingress_class_name
-  proxy_environment_variables = var.proxy_environment_variables
-  proxy_enabled = "true"
-  providers = {
-    aws = aws.default
-    kubernetes = kubernetes.static
-    helm = helm.static
-  }
-  elastic_cache_endpoint_url = module.elastic_cache.endpoint_url
-  depends_on = [module.ingress_class, module.elastic_cache]
+locals {
+  private_proxy_alb = "yuki-proxy-alb"
+  public_proxy_alb = "pub-yuki-proxy-alb"
 }
 
-module "yuki_proxy_disabled" {
+module "yuki_proxy" {
   source = "./modules/yuki-proxy"
-
-  namespace = "yuki-proxy-disabled"
-  load_balancer_name = "dis-yuki-proxy-lb"
-  ingress_name = "dis-yuki-proxy-ingress"
+  providers = {
+    aws = aws.default
+    kubernetes = kubernetes.static
+    helm = helm.static
+  }
+  namespace = "yuki-proxy"
+  load_balancer_name = local.private_proxy_alb
+  ingress_name = "yuki-proxy-ingress"
   create_private_load_balancers = var.create_vpc_peering
   private_certificate_arn     = var.client_vpc_config.certificate_arn
   public_certificate_arn      = var.public_domain.certificate_arn
   container_image             = var.container_image
   ingress_class_name          = var.ingress_class_name
   proxy_environment_variables = var.proxy_environment_variables
-  proxy_enabled = "false"
-  providers = {
-    aws = aws.default
-    kubernetes = kubernetes.static
-    helm = helm.static
-  }
   elastic_cache_endpoint_url = module.elastic_cache.endpoint_url
   depends_on = [module.ingress_class, module.elastic_cache]
 }
@@ -104,7 +85,7 @@ module "data_dog" {
     kubernetes = kubernetes.static
     helm = helm.static
   }
-  depends_on = [module.yuki_proxy_enabled,module.yuki_proxy_disabled]
+  depends_on = [module.yuki_proxy]
 }
 
 module "yuki_vpc_peering" {
@@ -133,9 +114,9 @@ module "private_dns_record" {
   private_domain = {
     domain_name     = var.client_vpc_config.private_domain_name
     route53_zone    = var.client_vpc_config.route_53_zone_name
-    load_balancer_name = "enab-yuki-proxy-lb"
+    load_balancer_name = local.private_proxy_alb
   }
-  depends_on = [module.yuki_proxy_enabled, module.yuki_proxy_disabled, module.yuki_vpc_peering]
+  depends_on = [module.yuki_proxy, module.yuki_vpc_peering]
 }
 
 module "public_dns_record" {
@@ -146,8 +127,7 @@ module "public_dns_record" {
   public_domain = {
     domain_name     = var.public_domain.name
     route53_zone    = var.public_domain.route53_zone
-    enabale_load_balancer_name = "pub-enab-yuki-proxy-lb"
-    disabled_load_balancer_name = "pub-dis-yuki-proxy-lb"
+    load_balancer_name = local.public_proxy_alb
   }
-  depends_on = [module.yuki_proxy_enabled, module.yuki_proxy_disabled]
+  depends_on = [module.yuki_proxy]
 }
