@@ -34,6 +34,7 @@ module "ingress_class" {
   source = "./modules/ingress-class"
 
   ingress_class_name = var.ingress_class_name
+  cluster_name = var.eks_cluster_name
   providers = {
     aws        = aws.default
     kubernetes = kubernetes.static

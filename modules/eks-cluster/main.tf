@@ -41,7 +41,7 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_ARM_64"
-    instance_types = ["t4g.large"]
+    instance_types = ["c7g.2xlarge"]
     iam_role_additional_policies = {
       AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy",
     }
@@ -50,7 +50,7 @@ module "eks" {
   eks_managed_node_groups = {
     yuki-proxy = {
       min_size     = 1
-      max_size     = 3
+      max_size     = 4
       desired_size = 2
       ebs_optimized = true
       block_device_mappings = {
