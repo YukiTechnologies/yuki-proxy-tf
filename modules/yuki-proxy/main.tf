@@ -19,10 +19,10 @@ resource "kubernetes_namespace" "namespace" {
 }
 
 locals {
-  nginx_proxy         = "nginx-proxy"
+  nginx_proxy    = "nginx-proxy"
   enabled_proxy  = "yuki-proxy-enabled"
   disabled_proxy = "yuki-proxy-disabled"
-  nginx_port          = "80"
+  nginx_port     = "80"
 }
 
 module "nginx_proxy" {
@@ -37,6 +37,17 @@ module "nginx_proxy" {
     host = local.enabled_proxy
     port = var.app_port
   }
+  depends_on = [kubernetes_namespace.namespace]
+}
+
+module "system_monitoring_job" {
+  source      = "./modules/system-monitoring"
+  system_url  = "https://prod.yukicomputing.com/health"
+  compute_url = "https://prod.yukicomputing.com/health"
+  cron_name   = "yuki-system-monitoring"
+  image       = "406122784773.dkr.ecr.us-east-1.amazonaws.com/system-monitoring-job:0.0.2"
+  namespace   = "yuki-system-monitoring"
+  redis_host  = var.elastic_cache_endpoint_url
   depends_on = [kubernetes_namespace.namespace]
 }
 
