@@ -25,6 +25,14 @@ locals {
   nginx_port     = "80"
 }
 
+resource "helm_release" "metrics_server" {
+  name       = "metrics-server"
+  repository = "https://kubernetes-sigs.github.io/metrics-server/"
+  chart      = "metrics-server"
+  namespace  = "kube-system"
+  version    = "3.12.0"
+}
+
 module "nginx_proxy" {
   source       = "./modules/nginx-proxy"
   namespace    = var.namespace

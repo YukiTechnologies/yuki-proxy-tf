@@ -67,7 +67,18 @@ resource "kubernetes_deployment" "nginx_proxy" {
         container {
           name  = "nginx"
           image = "nginx:stable"
-
+          
+          resources {
+            requests = {
+              cpu    = "250m"
+              memory = "500Mi"
+            }
+            limits = {
+              cpu    = "500m"
+              memory = "1Gi"
+            }
+          }
+          
           port {
             container_port = 80
           }

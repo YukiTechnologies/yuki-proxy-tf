@@ -9,16 +9,10 @@ resource "kubernetes_cron_job_v1" "system_monitoring_job" {
 
     job_template {
       metadata {
-        labels = {
-          "job-name" = "${var.cron_name}-job"
-        }
       }
       spec {
         template {
           metadata {
-            labels = {
-              "job-name" = "${var.cron_name}-job"
-            }
           }
           spec {
             container {
