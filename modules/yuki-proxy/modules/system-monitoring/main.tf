@@ -1,4 +1,4 @@
-resource "kubernetes_cron_job" "system_monitoring_job" {
+resource "kubernetes_cron_job_v1" "system_monitoring_job" {
   metadata {
     name      = var.cron_name
     namespace = var.namespace
