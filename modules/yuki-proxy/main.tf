@@ -117,3 +117,11 @@ module "yuki_enabled_proxy_hpa" {
   app_name  = local.enabled_proxy
   depends_on = [kubernetes_namespace.namespace]
 }
+
+module "yuki_disabled_proxy_hpa" {
+  source = "./modules/hpa"
+
+  namespace = var.namespace
+  app_name  = local.disabled_proxy
+  depends_on = [kubernetes_namespace.namespace]
+}

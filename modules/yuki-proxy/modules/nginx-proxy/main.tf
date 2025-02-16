@@ -111,3 +111,23 @@ resource "kubernetes_service" "nginx_proxy_service" {
   }
 }
 
+resource "kubernetes_horizontal_pod_autoscaler" "nginx_proxy_hpa" {
+  metadata {
+    name      = "${var.service_name}-hpa"
+    namespace = var.namespace
+  }
+
+  spec {
+    scale_target_ref {
+      kind = "Deployment"
+      name = var.service_name
+      api_version = "apps/v1"
+    }
+
+    min_replicas = 5
+    max_replicas = 20
+
+    target_cpu_utilization_percentage = 40
+  }
+}
+
