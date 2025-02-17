@@ -6,6 +6,24 @@ terraform {
   }
 }
 
+resource "aws_iam_policy" "autoscaling_policy" {
+  name        = "AllowAutoScalingDescribeAutoScalingGroups"
+  description = "Policy to allow autoscaling:DescribeAutoScalingGroups action"
+  policy      = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "autoscaling:DescribeAutoScalingGroups",
+          "ec2:DescribeLaunchTemplateVersions"
+        ]
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.31.4"
@@ -44,6 +62,7 @@ module "eks" {
     instance_types = ["c7g.2xlarge"]
     iam_role_additional_policies = {
       AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy",
+      AutoScalingDescribePolicy = aws_iam_policy.autoscaling_policy.arn
     }
   }
 

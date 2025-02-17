@@ -30,8 +30,9 @@ resource "kubernetes_ingress_class" "ingress_class" {
 resource "helm_release" "cluster_autoscaler" {
   name       = "cluster-autoscaler"
   repository = "https://kubernetes.github.io/autoscaler"
-  chart      = "cluster-autoscaler-chart"
+  chart      = "cluster-autoscaler"
   namespace  = "kube-system"
+  version    = "9.37.0"
 
   set {
     name  = "autoDiscovery.clusterName"
@@ -46,16 +47,6 @@ resource "helm_release" "cluster_autoscaler" {
   set {
     name  = "cloudProvider"
     value = "aws"
-  }
-
-  set {
-    name  = "extraArgs.balance-similar-node-groups"
-    value = "true"
-  }
-
-  set {
-    name  = "extraArgs.skip-nodes-with-local-storage"
-    value = "false"
   }
 
   set {
