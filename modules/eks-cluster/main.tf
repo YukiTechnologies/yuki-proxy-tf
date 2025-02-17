@@ -63,10 +63,11 @@ module "eks" {
           }
         }
       }
-    }
-    tags = {
-      Environment = "prd"
-      OwnedBy = "yuki-proxy"
+      tags = {
+        Env       = "prd"
+        Terraform = "true"
+        OwnedBy   = "yuki-proxy"
+      }
     }
   }
 
