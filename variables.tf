@@ -94,3 +94,14 @@ variable "proxy_environment_variables" {
     ACCOUNT_GUID = ""
   }
 }
+
+variable "shared_secrets_tag" {
+  type = object({
+    key = string
+    value = string
+  })
+  default = {
+    key = "Acceess"
+    value = "YukiProxy"
+  }
+}

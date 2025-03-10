@@ -24,6 +24,42 @@ resource "aws_iam_policy" "autoscaling_policy" {
   })
 }
 
+resource "aws_iam_policy" "secrets_manager_policy" {
+  name        = "AllowSecretsManagerAccess"
+  description = "Policy to allow access to AWS Secrets Manager resources"
+  policy      = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:ListSecrets"
+        ],
+        "Resource": "arn:aws:secretsmanager:*:*:secret:*",
+        "Condition": {
+          "StringEquals": {
+            "secretsmanager:ResourceTag/${var.shared_secrets_tag.key}": var.shared_secrets_tag.value,
+          }
+        }
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "kms:Decrypt"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "StringEquals": {
+            "kms:ViaService": "secretsmanager.*.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.31.4"
@@ -62,7 +98,8 @@ module "eks" {
     instance_types = ["c7g.2xlarge"]
     iam_role_additional_policies = {
       AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy",
-      AutoScalingDescribePolicy = aws_iam_policy.autoscaling_policy.arn
+      AutoScalingDescribePolicy = aws_iam_policy.autoscaling_policy.arn,
+      SecretsManagerPolicy = aws_iam_policy.secrets_manager_policy.arn
     }
   }
 
@@ -95,7 +132,6 @@ module "eks" {
   tags = {
     Env       = "prd"
     Terraform = "true"
-    OwnedBy = "yuki-proxy"
+    OwnedBy   = "yuki-proxy"
   }
 }
-

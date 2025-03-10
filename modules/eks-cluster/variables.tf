@@ -9,3 +9,10 @@ variable "private_subnets" {
 variable "cluster_name" {
   type = string
 }
+
+variable "shared_secrets_tag" {
+  type = object({
+    key = string
+    value = string
+  })
+}

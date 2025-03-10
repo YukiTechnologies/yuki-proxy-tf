@@ -11,9 +11,10 @@ module "eks" {
   providers = {
     aws = aws.default
   }
-  cluster_name    = var.eks_cluster_name
-  vpc_id          = module.vpc.vpc_id
-  private_subnets = module.vpc.private_subnets
+  cluster_name       = var.eks_cluster_name
+  vpc_id             = module.vpc.vpc_id
+  private_subnets    = module.vpc.private_subnets
+  shared_secrets_tag = var.shared_secrets_tag
   depends_on = [module.vpc]
 }
 
@@ -34,7 +35,7 @@ module "ingress_class" {
   source = "./modules/ingress-class"
 
   ingress_class_name = var.ingress_class_name
-  cluster_name = var.eks_cluster_name
+  cluster_name       = var.eks_cluster_name
   providers = {
     aws        = aws.default
     kubernetes = kubernetes.static
