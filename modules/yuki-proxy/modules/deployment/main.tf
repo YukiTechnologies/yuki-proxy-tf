@@ -50,11 +50,11 @@ resource "kubernetes_deployment" "yuki-proxy" {
           image_pull_policy = "IfNotPresent"
           resources {
             requests = {
-              cpu    = "250m"
+              cpu    = "1000m"
               memory = "500Mi"
             }
             limits = {
-              cpu    = "500m"
+              cpu    = "1000m"
               memory = "1Gi"
             }
           }
