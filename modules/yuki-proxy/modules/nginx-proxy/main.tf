@@ -70,7 +70,7 @@ resource "kubernetes_deployment" "nginx_proxy" {
           
           resources {
             requests = {
-              cpu    = "250m"
+              cpu    = "500m"
               memory = "500Mi"
             }
             limits = {
