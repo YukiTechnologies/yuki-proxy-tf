@@ -27,18 +27,14 @@ resource "aws_security_group" "elastic_cache_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "yuki-proxy-elastic-sg"
-  }
+  tags = var.tags
 }
 
 resource "aws_elasticache_subnet_group" "elastic_cache_subnet_group" {
   name       = "yuki-proxy-elastic-group"
   subnet_ids = var.private_subnets_ids
 
-  tags = {
-    Name = "yuki-proxy-elastic-group"
-  }
+  tags = var.tags
 }
 
 resource "aws_elasticache_cluster" "redis" {
@@ -51,8 +47,5 @@ resource "aws_elasticache_cluster" "redis" {
   
   security_group_ids = [aws_security_group.elastic_cache_sg.id]
 
-  tags = {
-    Name    = "yuki-proxy-redis"
-    OwnedBy = "yuki-proxy"
-  }
+  tags = var.tags
 }

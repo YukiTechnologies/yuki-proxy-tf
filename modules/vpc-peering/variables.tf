@@ -37,3 +37,8 @@ variable "client_vpc_config" {
     route_table_ids = list(string)
   })
 }
+
+variable "tags" {
+  description = "A map of tags to apply to resources"
+  type        = map(string)
+}

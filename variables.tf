@@ -105,3 +105,13 @@ variable "shared_secrets_tag" {
     value = "YukiProxy"
   }
 }
+
+variable "tags" {
+  description = "A map of tags to apply to resources"
+  type        = map(string)
+  default     = {
+    Env       = "prd"
+    Terraform = "true"
+    OwnedBy   = "yuki-proxy"
+  }
+}

@@ -119,19 +119,11 @@ module "eks" {
           }
         }
       }
-      tags = {
-        Env       = "prd"
-        Terraform = "true"
-        OwnedBy   = "yuki-proxy"
-      }
+      tags = var.tags
     }
   }
 
   enable_cluster_creator_admin_permissions = true
 
-  tags = {
-    Env       = "prd"
-    Terraform = "true"
-    OwnedBy   = "yuki-proxy"
-  }
+  tags = var.tags
 }

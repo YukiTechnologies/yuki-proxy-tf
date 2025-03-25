@@ -7,3 +7,8 @@ variable "vpc_config" {
     public_subnets  = list(string)
   })
 }
+
+variable "tags" {
+  description = "A map of tags to apply to resources"
+  type        = map(string)
+}

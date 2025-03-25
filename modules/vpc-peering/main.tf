@@ -11,9 +11,7 @@ resource "aws_vpc_peering_connection" "vpc_peering" {
   peer_vpc_id = var.client_vpc_config.id
   auto_accept = true
 
-  tags = {
-    Name = "Peering to Yuki VPC"
-  }
+  tags = var.tags
 }
 
 resource "aws_security_group_rule" "allow_vpc_peering" {

@@ -28,9 +28,5 @@ module "vpc" {
     "kubernetes.io/role/internal-elb" = 1
   }
 
-  tags = {
-    Terraform   = "true"
-    Environment = "prd"
-    OwnedBy = "yuki-proxy"
-  }
+  tags = var.tags
 }

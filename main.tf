@@ -4,6 +4,7 @@ module "vpc" {
     aws = aws.default
   }
   vpc_config = var.vpc_config
+  tags       = var.tags
 }
 
 module "eks" {
@@ -15,6 +16,7 @@ module "eks" {
   vpc_id             = module.vpc.vpc_id
   private_subnets    = module.vpc.private_subnets
   shared_secrets_tag = var.shared_secrets_tag
+  tags               = var.tags
   depends_on = [module.vpc]
 }
 
@@ -52,6 +54,7 @@ module "elastic_cache" {
   private_subnets_ids = module.vpc.private_subnets
   vpc_id              = module.vpc.vpc_id
   vpc_cidr_block      = module.vpc.vpc_cidr_block
+  tags                = var.tags
 }
 
 locals {
@@ -105,6 +108,7 @@ module "yuki_vpc_peering" {
   yuki_vpc_private_route_table_ids   = module.vpc.private_route_table_ids
   yuki_vpc_public_route_table_ids    = module.vpc.public_route_table_ids
   yuki_vpc_main_route_table_ids      = module.vpc.main_route_table_id
+  tags                               = var.tags
   depends_on = [module.vpc]
 }
 

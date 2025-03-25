@@ -16,3 +16,8 @@ variable "shared_secrets_tag" {
     value = string
   })
 }
+
+variable "tags" {
+  description = "A map of tags to apply to resources"
+  type        = map(string)
+}
