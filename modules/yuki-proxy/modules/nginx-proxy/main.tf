@@ -23,7 +23,7 @@ resource "kubernetes_config_map" "nginx_config" {
       }
       http {
         upstream backend {
-          server ${var.proxy_enabled.host}:${var.proxy_enabled.port} max_fails=3 fail_timeout=10s;
+          server ${var.proxy_enabled.host}:${var.proxy_enabled.port};
           server ${var.proxy_disabled.host}:${var.proxy_disabled.port} backup;
         }
         
