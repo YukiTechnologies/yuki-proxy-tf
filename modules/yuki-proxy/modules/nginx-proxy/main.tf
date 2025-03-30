@@ -23,7 +23,7 @@ resource "kubernetes_config_map" "nginx_config" {
       }
       http {
         upstream backend {
-          server ${var.proxy_enabled.host}:${var.proxy_enabled.port};
+          server ${var.proxy_enabled.host}:${var.proxy_enabled.port} max_fails=3 fail_timeout=10s;
           server ${var.proxy_disabled.host}:${var.proxy_disabled.port} backup;
         }
         
@@ -31,7 +31,7 @@ resource "kubernetes_config_map" "nginx_config" {
           listen 80;
           location / {
             proxy_pass http://backend;
-            proxy_next_upstream error timeout invalid_header http_500;
+            proxy_next_upstream error invalid_header;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
           }
