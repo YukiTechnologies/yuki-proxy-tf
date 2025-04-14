@@ -136,7 +136,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "nginx_proxy_hpa" {
     }
 
     min_replicas = 5
-    max_replicas = 20
+    max_replicas = 30
 
     target_cpu_utilization_percentage = 40
   }

@@ -105,9 +105,9 @@ module "eks" {
 
   eks_managed_node_groups = {
     yuki-proxy = {
-      min_size     = 1
-      max_size     = 5
-      desired_size = 2
+      min_size     = 2
+      max_size     = 10
+      desired_size = 4
       ebs_optimized = true
       block_device_mappings = {
         xvda = {

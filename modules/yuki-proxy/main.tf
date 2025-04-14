@@ -131,8 +131,8 @@ module "yuki_disabled_proxy_deployment" {
 
 module "yuki_enabled_proxy_hpa" {
   source                 = "./modules/hpa"
-  min_replicas           = 5
-  max_replicas           = 30
+  min_replicas           = 10
+  max_replicas           = 200
   target_cpu_utilization = 30
   namespace              = var.namespace
   app_name               = local.enabled_proxy
@@ -142,7 +142,7 @@ module "yuki_enabled_proxy_hpa" {
 module "yuki_disabled_proxy_hpa" {
   source                 = "./modules/hpa"
   min_replicas           = 5
-  max_replicas           = 10
+  max_replicas           = 30
   target_cpu_utilization = 50
   namespace              = var.namespace
   app_name               = local.disabled_proxy
