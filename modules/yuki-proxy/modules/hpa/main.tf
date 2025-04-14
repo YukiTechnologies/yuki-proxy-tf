@@ -19,9 +19,8 @@ resource "kubernetes_horizontal_pod_autoscaler" "yuki_proxy_hpa" {
       api_version = "apps/v1"
     }
 
-    min_replicas = 5
-    max_replicas = 30
-    
-    target_cpu_utilization_percentage = 30
+    min_replicas = var.min_replicas
+    max_replicas = var.max_replicas
+    target_cpu_utilization_percentage = var.target_cpu_utilization
   }
 }
