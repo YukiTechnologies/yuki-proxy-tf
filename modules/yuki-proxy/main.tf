@@ -148,14 +148,3 @@ module "yuki_disabled_proxy_hpa" {
   app_name               = local.disabled_proxy
   depends_on = [kubernetes_namespace.namespace]
 }
-
-module "nginx_proxy_hpa" {
-  source = "./modules/hpa"
-
-  min_replicas           = 5
-  max_replicas           = 10
-  target_cpu_utilization = 50
-  namespace              = var.namespace
-  app_name               = local.nginx_proxy
-  depends_on = [kubernetes_namespace.namespace]
-}
