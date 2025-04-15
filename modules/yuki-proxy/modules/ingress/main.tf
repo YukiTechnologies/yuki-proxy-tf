@@ -49,7 +49,7 @@ resource "kubernetes_ingress_v1" "internet_ingress" {
     name        = "pub-${var.ingress_name}"
     namespace   = var.namespace
     annotations = {
-      "alb.ingress.kubernetes.io/load-balancer-name" : "pub-${var.load_balancer_name}"
+      "alb.ingress.kubernetes.io/load-balancer-name" : "pub${var.load_balancer_name}"
       "alb.ingress.kubernetes.io/scheme" : "internet-facing"
       "alb.ingress.kubernetes.io/listen-ports" : "[{\"HTTPS\":443}, {\"HTTP\":80}]"
       "alb.ingress.kubernetes.io/certificate-arn" : var.public_certificate_arn

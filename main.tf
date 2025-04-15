@@ -58,8 +58,7 @@ module "elastic_cache" {
 }
 
 locals {
-  private_proxy_alb = "yuki-proxy-alb"
-  public_proxy_alb  = "pub-yuki-proxy-alb"
+  private_proxy_alb = "yuki"
 }
 
 module "yuki_proxy" {
@@ -133,8 +132,7 @@ module "public_dns_record" {
   }
   public_domain = {
     domain_name        = var.public_domain.name
-    route53_zone       = var.public_domain.route53_zone
-    load_balancer_name = local.public_proxy_alb
+    route53_zone_id    = var.public_domain.route53_zone_id
+    load_balancer_dns_name = module.yuki_proxy.yuki_proxy_public_load_balancer_dns
   }
-  depends_on = [module.yuki_proxy]
 }
