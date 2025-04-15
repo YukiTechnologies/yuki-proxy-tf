@@ -7,18 +7,25 @@ terraform {
 }
 
 resource "aws_iam_policy" "autoscaling_policy" {
-  name        = "AllowAutoScalingDescribeAutoScalingGroups"
-  description = "Policy to allow autoscaling:DescribeAutoScalingGroups action"
-  policy      = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+  name        = "eks-cluster-autoscaler-policy"
+  path        = "/"
+  description = "IAM policy for EKS Cluster Autoscaler"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
       {
-        "Effect": "Allow",
-        "Action": [
+        Effect = "Allow",
+        Action = [
           "autoscaling:DescribeAutoScalingGroups",
-          "ec2:DescribeLaunchTemplateVersions"
-        ]
-        "Resource": "*"
+          "autoscaling:DescribeAutoScalingInstances",
+          "autoscaling:DescribeLaunchConfigurations",
+          "autoscaling:DescribeTags",
+          "autoscaling:SetDesiredCapacity",
+          "autoscaling:TerminateInstanceInAutoScalingGroup",
+          "ec2:DescribeLaunchTemplateVersions",
+          "ec2:DescribeInstanceTypes"
+        ],
+        Resource = ["*"]
       }
     ]
   })
