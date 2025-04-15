@@ -6,22 +6,22 @@ terraform {
   }
 }
 
-data "aws_route53_zone" "private_zone" {
-  name = var.private_domain.route53_zone
-  private_zone  = true
+locals {
+  split_dns = split("-", var.private_domain.load_balancer_dns_name)
+  first_element = length(local.split_dns) > 0 ? local.split_dns[1] : ""
 }
 
 data "aws_lb" "private_alb" {
-  name = var.private_domain.load_balancer_name
+  name = local.first_element
 }
 
 resource "aws_route53_record" "alb_dns_record" {
-  zone_id = data.aws_route53_zone.private_zone.zone_id
+  zone_id = var.private_domain.route53_zone_id
   name    = var.private_domain.domain_name
   type    = "A"
 
   alias {
-    name                   = data.aws_lb.private_alb.dns_name
+    name                   = var.private_domain.load_balancer_dns_name
     zone_id                = data.aws_lb.private_alb.zone_id
     evaluate_target_health = true
   }

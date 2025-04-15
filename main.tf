@@ -119,10 +119,9 @@ module "private_dns_record" {
   }
   private_domain = {
     domain_name        = var.client_vpc_config.private_domain_name
-    route53_zone       = var.client_vpc_config.route_53_zone_name
-    load_balancer_name = local.private_proxy_alb
+    route53_zone_id       = module.yuki_vpc_peering[0].private_zone_id
+    load_balancer_dns_name = module.yuki_proxy.yuki_proxy_private_load_balancer_dns
   }
-  depends_on = [module.yuki_proxy, module.yuki_vpc_peering]
 }
 
 module "public_dns_record" {
