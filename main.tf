@@ -72,8 +72,9 @@ module "yuki_proxy" {
   load_balancer_name            = local.private_proxy_alb
   ingress_name                  = "yuki-proxy-ingress"
   create_private_load_balancers = var.create_vpc_peering
+  create_public_load_balancers  = var.public_domain != null
   private_certificate_arn       = var.client_vpc_config.certificate_arn
-  public_certificate_arn        = var.public_domain.certificate_arn
+  public_certificate_arn        = var.public_domain != null ? var.public_domain.certificate_arn : null
   container_image               = var.container_image
   ingress_class_name            = var.ingress_class_name
   proxy_environment_variables   = var.proxy_environment_variables
@@ -118,8 +119,8 @@ module "private_dns_record" {
     aws = aws.default
   }
   private_domain = {
-    domain_name        = var.client_vpc_config.private_domain_name
-    route53_zone_id       = module.yuki_vpc_peering[0].private_zone_id
+    domain_name            = var.client_vpc_config.private_domain_name
+    route53_zone_id        = module.yuki_vpc_peering[0].private_zone_id
     load_balancer_dns_name = module.yuki_proxy.yuki_proxy_private_load_balancer_dns
   }
 }
@@ -129,9 +130,11 @@ module "public_dns_record" {
   providers = {
     aws = aws.default
   }
-  public_domain = {
-    domain_name        = var.public_domain.name
-    route53_zone_id    = var.public_domain.route53_zone_id
+  count = var.public_domain != null ? 1 : 0
+
+  public_domain = count.index == 0 ? {
+    domain_name            = var.public_domain.name
+    route53_zone_id        = var.public_domain.route53_zone_id
     load_balancer_dns_name = module.yuki_proxy.yuki_proxy_public_load_balancer_dns
-  }
+  } : null
 }

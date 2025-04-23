@@ -37,3 +37,7 @@ variable "path" {
 variable "create_private_load_balancers" {
   type = bool
 }
+
+variable "create_public_load_balancers" {
+  type = bool
+}

@@ -44,6 +44,7 @@ resource "kubernetes_ingress_v1" "ingress" {
 }
 
 resource "kubernetes_ingress_v1" "internet_ingress" {
+  count = var.create_public_load_balancers ? 1 : 0
   wait_for_load_balancer = true
   metadata {
     name        = "pub-${var.ingress_name}"

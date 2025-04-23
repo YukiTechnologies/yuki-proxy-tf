@@ -66,6 +66,7 @@ module "yuki_proxy_ingress" {
   app_port                      = local.nginx_port
   namespace                     = var.namespace
   create_private_load_balancers = var.create_private_load_balancers
+  create_public_load_balancers  = var.create_public_load_balancers
   load_balancer_name            = var.load_balancer_name
   private_certificate_arn       = var.private_certificate_arn
   public_certificate_arn        = var.public_certificate_arn
@@ -131,7 +132,7 @@ module "yuki_disabled_proxy_deployment" {
 
 module "yuki_enabled_proxy_hpa" {
   source                 = "./modules/hpa"
-  min_replicas           = 10
+  min_replicas           = 5
   max_replicas           = 200
   target_cpu_utilization = 30
   namespace              = var.namespace

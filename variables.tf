@@ -75,11 +75,7 @@ variable "public_domain" {
     route53_zone_id = string
     certificate_arn = string
   })
-  default = {
-    name = "app.example.com"
-    route53_zone_id = "123456789"
-    certificate_arn = ""
-  }
+  default = null
 }
 
 variable "proxy_environment_variables" {
