@@ -1,9 +1,16 @@
-output "yuki_proxy_public_load_balancer_dns" {
-  description = "The DNS name of the Yuki Proxy load balancer"
-  value       = module.yuki_proxy_ingress.yuki_proxy_public_load_balancer_dns
+output "private_alb_dns_name" {
+  value = var.create_private_load_balancer ? module.yuki_proxy_private_alb[0].alb_dns_name : null
 }
 
-output "yuki_proxy_private_load_balancer_dns" {
-  description = "The DNS name of the Yuki Proxy load balancer"
-  value       = module.yuki_proxy_ingress.yuki_proxy_private_load_balancer_dns
+output "private_alb_zone_id" {
+  value = var.create_private_load_balancer ? module.yuki_proxy_private_alb[0].alb_zone_id : null
+}
+
+
+output "public_alb_dns_name" {
+  value = var.create_public_load_balancer ? module.yuki_proxy_public_alb[0].alb_dns_name : null
+}
+
+output "public_alb_zone_id" {
+  value = var.create_public_load_balancer ? module.yuki_proxy_public_alb[0].alb_zone_id : null
 }

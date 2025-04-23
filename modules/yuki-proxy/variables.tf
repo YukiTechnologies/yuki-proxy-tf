@@ -54,10 +54,22 @@ variable "elastic_cache_endpoint_url" {
   type = string
 }
 
-variable "create_private_load_balancers" {
+variable "create_private_load_balancer" {
   type = bool
 }
 
-variable "create_public_load_balancers" {
+variable "create_public_load_balancer" {
   type = bool
+}
+
+variable "vpc_id" {
+  type = string
+}
+
+variable "private_subnet_ids" {
+  type = list(string)
+}
+
+variable "public_subnet_ids" {
+  type = list(string)
 }

@@ -3,5 +3,6 @@ variable "public_domain" {
     domain_name     = string
     route53_zone_id    = string
     load_balancer_dns_name = string
+    load_balancer_zone_id = string
   })
 }
