@@ -50,8 +50,8 @@ module "nginx_proxy" {
 
 module "system_monitoring_job" {
   source      = "./modules/system-monitoring"
-  system_url  = "https://prod.yukicomputing.com/health"
-  compute_url = "https://prod.yukicomputing.com/compute/health"
+  system_url  = "${var.system_host}/health"
+  compute_url = "${var.compute_host}/compute/health"
   cron_name   = "yuki-system-monitoring"
   image       = "406122784773.dkr.ecr.us-east-1.amazonaws.com/system-monitoring-job:0.0.3"
   namespace   = var.namespace

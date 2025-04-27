@@ -68,20 +68,22 @@ module "yuki_proxy" {
     kubernetes = kubernetes.static
     helm       = helm.static
   }
-  vpc_id                        = module.vpc.vpc_id
-  private_subnet_ids            = module.vpc.private_subnets
-  public_subnet_ids             = module.vpc.public_subnets
-  namespace                     = "yuki-proxy"
-  load_balancer_name            = local.private_proxy_alb
-  ingress_name                  = "yuki-proxy-ingress"
+  vpc_id                       = module.vpc.vpc_id
+  private_subnet_ids           = module.vpc.private_subnets
+  public_subnet_ids            = module.vpc.public_subnets
+  namespace                    = "yuki-proxy"
+  load_balancer_name           = local.private_proxy_alb
+  ingress_name                 = "yuki-proxy-ingress"
   create_private_load_balancer = var.create_vpc_peering
   create_public_load_balancer  = var.public_domain != null
-  private_certificate_arn       = var.client_vpc_config.certificate_arn
-  public_certificate_arn        = var.public_domain != null ? var.public_domain.certificate_arn : null
-  container_image               = var.container_image
-  ingress_class_name            = var.ingress_class_name
-  proxy_environment_variables   = var.proxy_environment_variables
-  elastic_cache_endpoint_url    = module.elastic_cache.endpoint_url
+  private_certificate_arn      = var.client_vpc_config.certificate_arn
+  public_certificate_arn       = var.public_domain != null ? var.public_domain.certificate_arn : null
+  container_image              = var.container_image
+  ingress_class_name           = var.ingress_class_name
+  proxy_environment_variables  = var.proxy_environment_variables
+  elastic_cache_endpoint_url   = module.elastic_cache.endpoint_url
+  system_host                  = var.proxy_environment_variables.SYSTEM_HOST
+  compute_host                 = var.proxy_environment_variables.COMPUTE_HOST
   depends_on = [module.ingress_class, module.elastic_cache]
 }
 
@@ -125,7 +127,7 @@ module "private_dns_record" {
     domain_name            = var.client_vpc_config.private_domain_name
     route53_zone_id        = module.yuki_vpc_peering[0].private_zone_id
     load_balancer_dns_name = module.yuki_proxy.private_alb_dns_name
-    load_balancer_zone_id = module.yuki_proxy.private_alb_zone_id
+    load_balancer_zone_id  = module.yuki_proxy.private_alb_zone_id
   }
 }
 
@@ -140,6 +142,6 @@ module "public_dns_record" {
     domain_name            = var.public_domain.name
     route53_zone_id        = var.public_domain.route53_zone_id
     load_balancer_dns_name = module.yuki_proxy.public_alb_dns_name
-    load_balancer_zone_id = module.yuki_proxy.public_alb_zone_id
+    load_balancer_zone_id  = module.yuki_proxy.public_alb_zone_id
   } : null
 }

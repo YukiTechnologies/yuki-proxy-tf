@@ -15,7 +15,7 @@ variable "ingress_class_name" {
 }
 
 variable "proxy_environment_variables" {
-  type        = map(string)
+  type = map(string)
 }
 
 variable "namespace" {
@@ -31,22 +31,22 @@ variable "ingress_name" {
 }
 
 variable "app_group" {
-  type = string
+  type    = string
   default = "default-app-group"
 }
 
 variable "app_port" {
-  type = string
+  type    = string
   default = "5162"
 }
 
 variable "deployment_replicas" {
-  type = string
+  type    = string
   default = "5"
 }
 
 variable "path" {
-  type = string
+  type    = string
   default = "/"
 }
 
@@ -72,4 +72,12 @@ variable "private_subnet_ids" {
 
 variable "public_subnet_ids" {
   type = list(string)
+}
+
+variable "compute_host" {
+  type = string
+}
+
+variable "system_host" {
+  type = string
 }
