@@ -69,11 +69,14 @@ module "yuki_proxy" {
     helm       = helm.static
   }
   vpc_id                       = module.vpc.vpc_id
+  vpc_cidr                     = var.vpc_config.cidr
   private_subnet_ids           = module.vpc.private_subnets
   public_subnet_ids            = module.vpc.public_subnets
   namespace                    = "yuki-proxy"
   load_balancer_name           = local.private_proxy_alb
   ingress_name                 = "yuki-proxy-ingress"
+  create_private_link          = var.aws_account_id != null ? true : false
+  aws_account_id               = var.aws_account_id
   create_private_load_balancer = var.create_vpc_peering
   create_public_load_balancer  = var.public_domain != null
   private_certificate_arn      = var.client_vpc_config.certificate_arn

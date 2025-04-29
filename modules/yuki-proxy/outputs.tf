@@ -14,3 +14,7 @@ output "public_alb_dns_name" {
 output "public_alb_zone_id" {
   value = var.create_public_load_balancer ? module.yuki_proxy_public_alb[0].alb_zone_id : null
 }
+
+output "private_link_endpoint_name" {
+  value = var.create_private_link ? module.yuki_proxy_private_link[0].endpoint_service_name : null
+}

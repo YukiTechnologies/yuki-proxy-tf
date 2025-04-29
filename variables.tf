@@ -111,3 +111,8 @@ variable "tags" {
     OwnedBy   = "yuki-proxy"
   }
 }
+
+variable "aws_account_id" {
+  type = string
+  default = null
+}

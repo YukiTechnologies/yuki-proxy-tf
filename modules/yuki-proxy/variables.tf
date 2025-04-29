@@ -58,11 +58,23 @@ variable "create_private_load_balancer" {
   type = bool
 }
 
+variable "create_private_link" {
+  type = bool
+}
+
+variable "aws_account_id" {
+  type = string
+}
+
 variable "create_public_load_balancer" {
   type = bool
 }
 
 variable "vpc_id" {
+  type = string
+}
+
+variable "vpc_cidr" {
   type = string
 }
 

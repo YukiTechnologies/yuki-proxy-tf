@@ -142,6 +142,20 @@ module "yuki_proxy_public_alb" {
   depends_on = [kubernetes_namespace.namespace, module.nginx_proxy]
 }
 
+module "yuki_proxy_private_link" {
+  source = "./modules/nlb"
+  count = var.create_private_link ? 1 : 0
+  namespace = var.namespace
+  app_name = local.nginx_proxy
+  app_port = local.nginx_port
+  aws_account_id = var.aws_account_id
+  load_balancer_name = var.load_balancer_name
+  subnet_ids = var.private_subnet_ids
+  vpc_id = var.vpc_id
+  vpc_cidr = var.vpc_cidr
+  depends_on = [kubernetes_namespace.namespace, module.nginx_proxy]
+}
+
 module "yuki_enabled_proxy_hpa" {
   source                 = "./modules/hpa"
   min_replicas           = 5
