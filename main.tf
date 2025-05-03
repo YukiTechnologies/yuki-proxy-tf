@@ -66,7 +66,8 @@ module "yuki_proxy" {
   providers = {
     aws        = aws.default
     kubernetes = kubernetes.static
-    helm       = helm.static
+    helm = helm.static
+    kubectl    = kubectl
   }
   vpc_id                       = module.vpc.vpc_id
   vpc_cidr                     = var.vpc_config.cidr

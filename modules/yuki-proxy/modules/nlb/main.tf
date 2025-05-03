@@ -6,6 +6,9 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+    }
   }
 }
 
@@ -63,42 +66,12 @@ resource "aws_vpc_endpoint_service_allowed_principal" "same_account" {
   principal_arn           = "arn:aws:iam::${var.aws_account_id}:root"
 }
 
-resource "kubernetes_manifest" "private_target_group_binding" {
-  provider = kubernetes
-  manifest = {
-    apiVersion = "elbv2.k8s.aws/v1beta1"
-    kind       = "TargetGroupBinding"
-    metadata = {
-      name      = "${var.app_name}-tgb"
-      namespace = var.namespace
-    }
-    spec = {
-      serviceRef = {
-        name = var.app_name
-        port = var.app_port
-      }
-      targetGroupARN = module.nlb.target_group_arns[0]
-      targetType     = "ip"
-
-      networking = {
-        ingress = [
-          {
-            from = [
-              {
-                ipBlock = {
-                  cidr = var.vpc_cidr
-                }
-              }
-            ]
-            ports = [
-              {
-                port     = var.app_port
-                protocol = "TCP"
-              }
-            ]
-          }
-        ]
-      }
-    }
-  }
+resource "kubectl_manifest" "private_target_group_binding" {
+  yaml_body = templatefile("${path.module}/target_group_binding.yaml.tftpl", {
+    app_name        = var.app_name
+    namespace       = var.namespace
+    app_port        = var.app_port
+    target_group_arn = module.nlb.target_group_arns[0]
+    vpc_cidr        = var.vpc_cidr
+  })
 }
