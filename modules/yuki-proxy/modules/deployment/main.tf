@@ -44,10 +44,21 @@ resource "kubernetes_deployment" "yuki-proxy" {
       }
 
       spec {
+        termination_grace_period_seconds = 90
+
         container {
           image = var.container_image
           name  = var.app_name
           image_pull_policy = "IfNotPresent"
+
+          lifecycle {
+            pre_stop {
+              exec {
+                command = ["/bin/sh", "-c", "sleep 60"]
+              }
+            }
+          }
+
           resources {
             requests = {
               cpu    = "1000m"
