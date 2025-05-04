@@ -156,6 +156,7 @@ module "yuki_proxy_private_link" {
   subnet_ids = var.private_subnet_ids
   vpc_id = var.vpc_id
   vpc_cidr = var.vpc_cidr
+  certificate_arn = var.private_certificate_arn
   depends_on = [kubernetes_namespace.namespace, module.nginx_proxy]
 }
 

@@ -26,6 +26,10 @@ variable "aws_account_id" {
   type = string
 }
 
+variable "certificate_arn" {
+  type = string
+}
+
 variable "subnet_ids" {
   type = list(string)
 }

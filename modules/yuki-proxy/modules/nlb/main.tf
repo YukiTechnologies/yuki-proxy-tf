@@ -43,10 +43,11 @@ module "nlb" {
     }
   ]
 
-  http_tcp_listeners = [
+  https_listeners = [
     {
-      port               = var.app_port
-      protocol           = "TCP"
+      port               = 443
+      protocol           = "TLS"
+      certificate_arn    = var.certificate_arn
       target_group_index = 0
     }
   ]
