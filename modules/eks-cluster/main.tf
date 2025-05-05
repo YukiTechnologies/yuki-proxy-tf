@@ -7,7 +7,7 @@ terraform {
 }
 
 resource "aws_iam_policy" "autoscaling_policy" {
-  name        = "eks-cluster-autoscaler-policy"
+  name        = "${var.cluster_name}-autoscaler-policy"
   path        = "/"
   description = "IAM policy for EKS Cluster Autoscaler"
   policy = jsonencode({
@@ -32,7 +32,7 @@ resource "aws_iam_policy" "autoscaling_policy" {
 }
 
 resource "aws_iam_policy" "secrets_manager_policy" {
-  name        = "AllowSecretsManagerAccess"
+  name        = "${var.cluster_name}-AllowSecretsManagerAccess"
   description = "Policy to allow access to AWS Secrets Manager resources"
   policy      = jsonencode({
     "Version": "2012-10-17",

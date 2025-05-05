@@ -1,7 +1,7 @@
 module "lb_role" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
-  role_name                              = "${var.env_name}_eks_lb"
+  role_name                              = "${var.cluster_name}-${var.env_name}_eks_lb"
   attach_load_balancer_controller_policy = true
   attach_external_dns_policy = true
 
