@@ -147,11 +147,11 @@ module "yuki_proxy_public_alb" {
 
 module "yuki_proxy_private_link" {
   source = "./modules/nlb"
-  count = var.create_private_link ? 1 : 0
+  count = var.private_link_config != null ? 1 : 0
   namespace = var.namespace
   app_name = local.nginx_proxy
   app_port = local.nginx_port
-  aws_account_id = var.aws_account_id
+  private_link_config = var.private_link_config
   load_balancer_name = var.load_balancer_name
   subnet_ids = var.private_subnet_ids
   vpc_id = var.vpc_id

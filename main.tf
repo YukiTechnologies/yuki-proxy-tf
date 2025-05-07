@@ -66,7 +66,7 @@ module "yuki_proxy" {
   providers = {
     aws        = aws.default
     kubernetes = kubernetes.static
-    helm = helm.static
+    helm       = helm.static
     kubectl    = kubectl
   }
   vpc_id                       = module.vpc.vpc_id
@@ -76,8 +76,7 @@ module "yuki_proxy" {
   namespace                    = "yuki-proxy"
   load_balancer_name           = local.private_proxy_alb
   ingress_name                 = "yuki-proxy-ingress"
-  create_private_link          = var.aws_account_id != null ? true : false
-  aws_account_id               = var.aws_account_id
+  private_link_config          = var.private_link_config
   create_private_load_balancer = var.create_vpc_peering
   create_public_load_balancer  = var.public_domain != null
   private_certificate_arn      = var.client_vpc_config.certificate_arn

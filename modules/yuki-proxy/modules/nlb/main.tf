@@ -56,7 +56,7 @@ module "nlb" {
 resource "aws_vpc_endpoint_service" "service" {
   acceptance_required        = false
   network_load_balancer_arns = [module.nlb.lb_arn]
-
+  supported_regions = var.private_link_config.supported_regions
   tags = {
     Name = "${var.app_name}-endpoint-service"
   }
@@ -64,7 +64,7 @@ resource "aws_vpc_endpoint_service" "service" {
 
 resource "aws_vpc_endpoint_service_allowed_principal" "same_account" {
   vpc_endpoint_service_id = aws_vpc_endpoint_service.service.id
-  principal_arn           = "arn:aws:iam::${var.aws_account_id}:root"
+  principal_arn           = "arn:aws:iam::${var.private_link_config.aws_account_id}:root"
 }
 
 resource "kubectl_manifest" "private_target_group_binding" {

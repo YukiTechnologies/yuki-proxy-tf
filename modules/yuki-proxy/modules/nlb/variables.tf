@@ -22,14 +22,17 @@ variable "load_balancer_name" {
   type = string
 }
 
-variable "aws_account_id" {
-  type = string
-}
-
 variable "certificate_arn" {
   type = string
 }
 
 variable "subnet_ids" {
   type = list(string)
+}
+
+variable "private_link_config" {
+  type = object({
+    aws_account_id = string
+    supported_regions = list(string)
+  })
 }

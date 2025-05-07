@@ -58,14 +58,6 @@ variable "create_private_load_balancer" {
   type = bool
 }
 
-variable "create_private_link" {
-  type = bool
-}
-
-variable "aws_account_id" {
-  type = string
-}
-
 variable "create_public_load_balancer" {
   type = bool
 }
@@ -92,4 +84,11 @@ variable "compute_host" {
 
 variable "system_host" {
   type = string
+}
+
+variable "private_link_config" {
+  type = object({
+    aws_account_id = string
+    supported_regions = list(string)
+  })
 }
