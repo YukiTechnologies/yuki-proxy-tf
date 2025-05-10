@@ -51,6 +51,18 @@ resource "kubernetes_deployment" "yuki-proxy" {
           name  = var.app_name
           image_pull_policy = "IfNotPresent"
 
+          readiness_probe {
+            http_get {
+              path = "/health"
+              port = var.app_port
+            }
+            initial_delay_seconds = 10
+            period_seconds        = 10
+            timeout_seconds       = 1
+            success_threshold     = 2
+            failure_threshold     = 3
+          }
+
           lifecycle {
             pre_stop {
               exec {
