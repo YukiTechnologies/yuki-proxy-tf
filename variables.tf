@@ -82,7 +82,7 @@ variable "proxy_environment_variables" {
   description = "Environment variables for proxy deployment"
   type        = map(string)
   default     = {
-    PROXY_HOST   = ""
+    PROXY_HOST   = "https://jsjvnsg-prod.snowflakecomputing.com/"
     COMPUTE_HOST = "https://prod.yukicomputing.com"
     SYSTEM_HOST  = "https://prod.yukicomputing.com"
     COMPANY_GUID = ""

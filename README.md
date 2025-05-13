@@ -8,15 +8,13 @@ Prerequisites:
 
 Set the variables:
 
-| Parameter                             |         Description          | Required |      Default       |
-|:--------------------------------------|:----------------------------:|---------:|:------------------:|
-| `aws.profile`                         |     AWS account profile      |      Yes |        none        |
-| `aws.region`                          |      AWS account region      |      Yes |        none        |
-| `app.container.env.REDIS_HOST`        |          Redis host          |      yes |        none        |
-| `app.container.env.PROXY_HOST`        |     Your Snowflake host      |      yes |        none        |
-| `deployment.spec.tolerations.enabled` | Deployment toleration config |       no |       false        |
-| `deployment.spec.affinity.enabled`    |  Deployment affinity config  |       no |       false        |
-| `hpa.enabled`                         |      Service HPA config      |       no |        true        |
+| Parameter                               |         Description          | Required |      Default       |
+|:----------------------------------------|:----------------------------:|---------:|:------------------:|
+| `aws.profile`                           |     AWS account profile      |      yes |        none        |
+| `aws.region`                            |      AWS account region      |      yes |        none        |
+| `proxy_environment_variables.PROXY_HOST`|     Your Snowflake host      |      yes |        none        |
+| `container_image`                       |      Should be provided      |      yes |        none        |
+| `dd_api_key`                            |      DataDog API key         |       no |        none        |
 
 
 Installation:
