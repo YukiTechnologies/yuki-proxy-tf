@@ -119,3 +119,8 @@ variable "private_link_config" {
   })
   default = null
 }
+
+variable "use_nginx" {
+  type = bool
+  default = true
+}

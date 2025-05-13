@@ -7,10 +7,10 @@ terraform {
       source = "hashicorp/kubernetes"
     }
     kubectl = {
-      source  = "gavinbunney/kubectl"
+      source = "gavinbunney/kubectl"
     }
     helm = {
-      source  = "hashicorp/helm"
+      source = "hashicorp/helm"
     }
   }
 }
@@ -23,9 +23,10 @@ resource "kubernetes_namespace" "namespace" {
 
 locals {
   nginx_proxy    = "nginx-proxy"
-  enabled_proxy  = "yuki-proxy-enabled"
-  disabled_proxy = "yuki-proxy-disabled"
   nginx_port     = "80"
+  enabled_proxy  = "yuki-proxy-enabled"
+  proxy_port     = "5162"
+  disabled_proxy = "yuki-proxy-disabled"
 }
 
 resource "helm_release" "metrics_server" {
@@ -37,6 +38,7 @@ resource "helm_release" "metrics_server" {
 }
 
 module "nginx_proxy" {
+  count        = var.use_nginx ? 1 : 0
   source       = "./modules/nginx-proxy"
   namespace    = var.namespace
   service_name = local.nginx_proxy
@@ -121,8 +123,8 @@ module "yuki_proxy_private_alb" {
   internal           = true
   vpc_id             = var.vpc_id
   subnet_ids         = var.private_subnet_ids
-  app_name           = local.nginx_proxy
-  app_port           = local.nginx_port
+  app_name           = var.use_nginx ? local.nginx_proxy : local.enabled_proxy
+  app_port           = var.use_nginx ? local.nginx_port : local.proxy_port
   namespace          = var.namespace
   load_balancer_name = var.load_balancer_name
   certificate_arn    = var.private_certificate_arn
@@ -136,8 +138,8 @@ module "yuki_proxy_public_alb" {
   internal           = false
   vpc_id             = var.vpc_id
   subnet_ids         = var.public_subnet_ids
-  app_name           = local.nginx_proxy
-  app_port           = local.nginx_port
+  app_name           = var.use_nginx ? local.nginx_proxy : local.enabled_proxy
+  app_port           = var.use_nginx ? local.nginx_port : local.proxy_port
   namespace          = var.namespace
   load_balancer_name = var.load_balancer_name
   certificate_arn    = var.public_certificate_arn
@@ -146,17 +148,17 @@ module "yuki_proxy_public_alb" {
 }
 
 module "yuki_proxy_private_link" {
-  source = "./modules/nlb"
-  count = var.private_link_config != null ? 1 : 0
-  namespace = var.namespace
-  app_name = local.nginx_proxy
-  app_port = local.nginx_port
+  source              = "./modules/nlb"
+  count               = var.private_link_config != null ? 1 : 0
+  namespace           = var.namespace
+  app_name            = var.use_nginx ? local.nginx_proxy : local.enabled_proxy
+  app_port            = var.use_nginx ? local.nginx_port : local.proxy_port
   private_link_config = var.private_link_config
-  load_balancer_name = var.load_balancer_name
-  subnet_ids = var.private_subnet_ids
-  vpc_id = var.vpc_id
-  vpc_cidr = var.vpc_cidr
-  certificate_arn = var.private_certificate_arn
+  load_balancer_name  = var.load_balancer_name
+  subnet_ids          = var.private_subnet_ids
+  vpc_id              = var.vpc_id
+  vpc_cidr            = var.vpc_cidr
+  certificate_arn     = var.private_certificate_arn
   depends_on = [kubernetes_namespace.namespace, module.nginx_proxy]
 }
 

@@ -82,7 +82,7 @@ module "yuki_proxy" {
   private_certificate_arn      = var.client_vpc_config.certificate_arn
   public_certificate_arn       = var.public_domain != null ? var.public_domain.certificate_arn : null
   container_image              = var.container_image
-  ingress_class_name           = var.ingress_class_name
+  use_nginx                    = var.use_nginx
   proxy_environment_variables  = var.proxy_environment_variables
   elastic_cache_endpoint_url   = module.elastic_cache.endpoint_url
   system_host                  = var.proxy_environment_variables.SYSTEM_HOST

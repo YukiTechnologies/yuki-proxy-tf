@@ -10,10 +10,6 @@ variable "private_certificate_arn" {
   type = string
 }
 
-variable "ingress_class_name" {
-  type = string
-}
-
 variable "proxy_environment_variables" {
   type = map(string)
 }
@@ -91,4 +87,8 @@ variable "private_link_config" {
     aws_account_id = string
     supported_regions = list(string)
   })
+}
+
+variable "use_nginx" {
+  type = bool
 }
