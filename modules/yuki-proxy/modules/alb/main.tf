@@ -1,3 +1,17 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+    }
+  }
+}
+
 locals {
   type = var.internal ? "private" : "public"
 }
@@ -87,42 +101,13 @@ module "alb" {
   ]
 }
 
-resource "kubernetes_manifest" "private_target_group_binding" {
-  
-  manifest = {
-    apiVersion = "elbv2.k8s.aws/v1beta1"
-    kind       = "TargetGroupBinding"
-    metadata = {
-      name      = "${var.app_name}-${local.type}-tgb"
-      namespace = var.namespace
-    }
-    spec = {
-      serviceRef = {
-        name = var.app_name
-        port = var.app_port
-      }
-      targetGroupARN = module.alb.target_group_arns[0]
-      targetType     = "ip"
-
-      networking = {
-        ingress = [
-          {
-            from = [
-              {
-                securityGroup = {
-                  groupID = aws_security_group.alb_sg.id
-                }
-              }
-            ]
-            ports = [
-              {
-                port     = var.app_port
-                protocol = "TCP"
-              }
-            ]
-          }
-        ]
-      }
-    }
-  }
+resource "kubectl_manifest" "private_target_group_binding" {
+  yaml_body = templatefile("${path.module}/target_group_binding.yaml.tftpl", {
+    app_name          = var.app_name
+    type              = local.type
+    namespace         = var.namespace
+    app_port          = var.app_port
+    target_group_arn  = module.alb.target_group_arns[0]
+    security_group_id = aws_security_group.alb_sg.id
+  })
 }
