@@ -119,3 +119,8 @@ variable "private_link_config" {
   })
   default = null
 }
+
+variable "proxy_min_replicas" {
+  type = number
+  default = 20
+}
