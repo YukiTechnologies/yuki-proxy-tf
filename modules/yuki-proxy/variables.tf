@@ -92,3 +92,7 @@ variable "private_link_config" {
     supported_regions = list(string)
   })
 }
+
+variable "proxy_min_replicas" {
+  type = number
+}

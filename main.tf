@@ -87,6 +87,7 @@ module "yuki_proxy" {
   elastic_cache_endpoint_url   = module.elastic_cache.endpoint_url
   system_host                  = var.proxy_environment_variables.SYSTEM_HOST
   compute_host                 = var.proxy_environment_variables.COMPUTE_HOST
+  proxy_min_replicas = var.proxy_min_replicas
   depends_on = [module.ingress_class, module.elastic_cache]
 }
 

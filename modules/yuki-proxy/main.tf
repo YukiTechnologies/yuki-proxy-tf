@@ -90,7 +90,7 @@ module "yuki_enabled_proxy_deployment" {
   app_name                    = local.enabled_proxy
   app_port                    = var.app_port
   container_image             = var.container_image
-  deployment_replicas         = 20
+  deployment_replicas         = var.proxy_min_replicas
   proxy_enabled               = "true"
   proxy_environment_variables = var.proxy_environment_variables
   elastic_cache_endpoint      = var.elastic_cache_endpoint_url
@@ -162,7 +162,7 @@ module "yuki_proxy_private_link" {
 
 module "yuki_enabled_proxy_hpa" {
   source                 = "./modules/hpa"
-  min_replicas           = 20
+  min_replicas           = var.proxy_min_replicas
   max_replicas           = 200
   target_cpu_utilization = 30
   namespace              = var.namespace
