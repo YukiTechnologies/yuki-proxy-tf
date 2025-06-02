@@ -53,4 +53,19 @@ resource "helm_release" "cluster_autoscaler" {
     name  = "extraArgs.expander"
     value = "least-waste"
   }
+  
+  set {
+    name  = "extraArgs.ignore-daemonsets-utilization"
+    value = "true"
+  }
+
+  set {
+    name  = "extraArgs.scale-down-delay-after-add"
+    value = "5m" 
+  }
+
+  set {
+    name  = "extraArgs.scale-down-unneeded-time"
+    value = "5m"
+  }
 }
