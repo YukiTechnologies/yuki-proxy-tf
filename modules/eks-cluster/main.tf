@@ -112,9 +112,9 @@ module "eks" {
 
   eks_managed_node_groups = {
     yuki-proxy = {
-      min_size     = 2
-      max_size     = 10
-      desired_size = 4
+      min_size     = var.eks_nodes.min_size
+      max_size     = var.eks_nodes.max_size
+      desired_size = var.eks_nodes.desired_size
       ebs_optimized = true
       block_device_mappings = {
         xvda = {

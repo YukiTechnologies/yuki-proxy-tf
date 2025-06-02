@@ -116,4 +116,10 @@ resource "kubernetes_deployment" "yuki-proxy" {
       }
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      spec[0].replicas
+    ]
+  }
 }

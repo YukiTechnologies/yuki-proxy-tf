@@ -124,3 +124,21 @@ variable "proxy_min_replicas" {
   type = number
   default = 20
 }
+
+variable "proxy_max_replicas" {
+  type = number
+  default = 100
+}
+
+variable "eks_nodes" {
+  type = object({
+    min_size =number
+    desired_size = number
+    max_size = number
+  })
+  default = {
+    min_size = 2
+    desired_size = 2
+    max_size = 10
+  }
+}
