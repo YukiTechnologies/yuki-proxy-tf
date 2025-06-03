@@ -142,3 +142,8 @@ variable "eks_nodes" {
     max_size = 10
   }
 }
+
+variable "elasticache_node_type" {
+  type = string
+  default = "cache.t4g.medium"
+}

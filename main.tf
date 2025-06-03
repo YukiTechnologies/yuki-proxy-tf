@@ -55,6 +55,7 @@ module "elastic_cache" {
   private_subnets_ids = module.vpc.private_subnets
   vpc_id              = module.vpc.vpc_id
   vpc_cidr_block      = module.vpc.vpc_cidr_block
+  node_type           = var.elasticache_node_type
   tags                = var.tags
 }
 
