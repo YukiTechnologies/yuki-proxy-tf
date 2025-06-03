@@ -163,7 +163,7 @@ module "yuki_proxy_private_link" {
 module "yuki_enabled_proxy_hpa" {
   source                 = "./modules/hpa"
   min_replicas           = var.proxy_min_replicas
-  max_replicas           = 200
+  max_replicas           = var.proxy_max_replicas
   target_cpu_utilization = 30
   namespace              = var.namespace
   app_name               = local.enabled_proxy

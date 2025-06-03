@@ -96,3 +96,7 @@ variable "private_link_config" {
 variable "proxy_min_replicas" {
   type = number
 }
+
+variable "proxy_max_replicas" {
+  type = number
+}
