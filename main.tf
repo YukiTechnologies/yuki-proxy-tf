@@ -77,14 +77,12 @@ module "yuki_proxy" {
   public_subnet_ids            = module.vpc.public_subnets
   namespace                    = "yuki-proxy"
   load_balancer_name           = local.private_proxy_alb
-  ingress_name                 = "yuki-proxy-ingress"
   private_link_config          = var.private_link_config
   create_private_load_balancer = var.create_vpc_peering
   create_public_load_balancer  = var.public_domain != null
   private_certificate_arn      = var.client_vpc_config.certificate_arn
   public_certificate_arn       = var.public_domain != null ? var.public_domain.certificate_arn : null
   container_image              = var.container_image
-  ingress_class_name           = var.ingress_class_name
   proxy_environment_variables  = var.proxy_environment_variables
   elastic_cache_endpoint_url   = module.elastic_cache.endpoint_url
   system_host                  = var.proxy_environment_variables.SYSTEM_HOST
