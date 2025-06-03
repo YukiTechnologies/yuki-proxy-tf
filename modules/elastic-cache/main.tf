@@ -40,7 +40,7 @@ resource "aws_elasticache_subnet_group" "elastic_cache_subnet_group" {
 resource "aws_elasticache_cluster" "redis" {
   cluster_id           = "yuki-proxy-redis"
   engine               = "redis"
-  node_type            = "cache.t4g.medium"
+  node_type            = var.node_type
   num_cache_nodes      = 1
   parameter_group_name = "default.redis7"
   subnet_group_name    = aws_elasticache_subnet_group.elastic_cache_subnet_group.name
