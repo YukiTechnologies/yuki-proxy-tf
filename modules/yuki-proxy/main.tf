@@ -7,10 +7,10 @@ terraform {
       source = "hashicorp/kubernetes"
     }
     kubectl = {
-      source  = "gavinbunney/kubectl"
+      source = "gavinbunney/kubectl"
     }
     helm = {
-      source  = "hashicorp/helm"
+      source = "hashicorp/helm"
     }
   }
 }
@@ -22,10 +22,7 @@ resource "kubernetes_namespace" "namespace" {
 }
 
 locals {
-  nginx_proxy    = "nginx-proxy"
-  enabled_proxy  = "yuki-proxy-enabled"
-  disabled_proxy = "yuki-proxy-disabled"
-  nginx_port     = "80"
+  proxy_name = "yuki-proxy"
 }
 
 resource "helm_release" "metrics_server" {
@@ -34,21 +31,6 @@ resource "helm_release" "metrics_server" {
   chart      = "metrics-server"
   namespace  = "kube-system"
   version    = "3.12.0"
-}
-
-module "nginx_proxy" {
-  source       = "./modules/nginx-proxy"
-  namespace    = var.namespace
-  service_name = local.nginx_proxy
-  proxy_disabled = {
-    host = local.disabled_proxy
-    port = var.app_port
-  }
-  proxy_enabled = {
-    host = local.enabled_proxy
-    port = var.app_port
-  }
-  depends_on = [kubernetes_namespace.namespace]
 }
 
 module "system_monitoring_job" {
@@ -67,17 +49,7 @@ module "yuki_enabled_proxy_service" {
 
   namespace = var.namespace
   app_group = var.app_group
-  app_name  = local.enabled_proxy
-  app_port  = var.app_port
-  depends_on = [kubernetes_namespace.namespace]
-}
-
-module "yuki_disabled_proxy_service" {
-  source = "./modules/service"
-
-  namespace = var.namespace
-  app_group = var.app_group
-  app_name  = local.disabled_proxy
+  app_name  = local.proxy_name
   app_port  = var.app_port
   depends_on = [kubernetes_namespace.namespace]
 }
@@ -87,7 +59,7 @@ module "yuki_enabled_proxy_deployment" {
 
   namespace                   = var.namespace
   app_group                   = var.app_group
-  app_name                    = local.enabled_proxy
+  app_name                    = local.proxy_name
   app_port                    = var.app_port
   container_image             = var.container_image
   deployment_replicas         = var.proxy_min_replicas
@@ -99,35 +71,19 @@ module "yuki_enabled_proxy_deployment" {
   depends_on = [kubernetes_namespace.namespace]
 }
 
-module "yuki_disabled_proxy_deployment" {
-  source = "./modules/deployment"
-
-  namespace                   = var.namespace
-  app_group                   = var.app_group
-  app_name                    = local.disabled_proxy
-  app_port                    = var.app_port
-  container_image             = var.container_image
-  deployment_replicas         = var.deployment_replicas
-  proxy_enabled               = "false"
-  proxy_environment_variables = var.proxy_environment_variables
-  elastic_cache_endpoint      = var.elastic_cache_endpoint_url
-  redis_key_name              = "dis-redis-encryption-key"
-  depends_on = [kubernetes_namespace.namespace]
-}
-
 module "yuki_proxy_private_alb" {
   source             = "./modules/alb"
   count              = var.create_private_load_balancer ? 1 : 0
   internal           = true
   vpc_id             = var.vpc_id
   subnet_ids         = var.private_subnet_ids
-  app_name           = local.nginx_proxy
-  app_port           = local.nginx_port
+  app_name           = local.proxy_name
+  app_port           = var.app_port
   namespace          = var.namespace
   load_balancer_name = var.load_balancer_name
   certificate_arn    = var.private_certificate_arn
   path               = var.path
-  depends_on = [kubernetes_namespace.namespace, module.nginx_proxy]
+  depends_on = [kubernetes_namespace.namespace]
 }
 
 module "yuki_proxy_public_alb" {
@@ -136,28 +92,28 @@ module "yuki_proxy_public_alb" {
   internal           = false
   vpc_id             = var.vpc_id
   subnet_ids         = var.public_subnet_ids
-  app_name           = local.nginx_proxy
-  app_port           = local.nginx_port
+  app_name           = local.proxy_name
+  app_port           = var.app_port
   namespace          = var.namespace
   load_balancer_name = var.load_balancer_name
   certificate_arn    = var.public_certificate_arn
   path               = var.path
-  depends_on = [kubernetes_namespace.namespace, module.nginx_proxy]
+  depends_on = [kubernetes_namespace.namespace]
 }
 
 module "yuki_proxy_private_link" {
-  source = "./modules/nlb"
-  count = var.private_link_config != null ? 1 : 0
-  namespace = var.namespace
-  app_name = local.nginx_proxy
-  app_port = local.nginx_port
+  source              = "./modules/nlb"
+  count               = var.private_link_config != null ? 1 : 0
+  namespace           = var.namespace
+  app_name            = local.proxy_name
+  app_port            = var.app_port
   private_link_config = var.private_link_config
-  load_balancer_name = var.load_balancer_name
-  subnet_ids = var.private_subnet_ids
-  vpc_id = var.vpc_id
-  vpc_cidr = var.vpc_cidr
-  certificate_arn = var.private_certificate_arn
-  depends_on = [kubernetes_namespace.namespace, module.nginx_proxy]
+  load_balancer_name  = var.load_balancer_name
+  subnet_ids          = var.private_subnet_ids
+  vpc_id              = var.vpc_id
+  vpc_cidr            = var.vpc_cidr
+  certificate_arn     = var.private_certificate_arn
+  depends_on = [kubernetes_namespace.namespace]
 }
 
 module "yuki_enabled_proxy_hpa" {
@@ -166,16 +122,6 @@ module "yuki_enabled_proxy_hpa" {
   max_replicas           = var.proxy_max_replicas
   target_cpu_utilization = 30
   namespace              = var.namespace
-  app_name               = local.enabled_proxy
-  depends_on = [kubernetes_namespace.namespace]
-}
-
-module "yuki_disabled_proxy_hpa" {
-  source                 = "./modules/hpa"
-  min_replicas           = 5
-  max_replicas           = 30
-  target_cpu_utilization = 50
-  namespace              = var.namespace
-  app_name               = local.disabled_proxy
+  app_name               = local.proxy_name
   depends_on = [kubernetes_namespace.namespace]
 }
