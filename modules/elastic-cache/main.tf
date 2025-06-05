@@ -44,7 +44,7 @@ resource "aws_elasticache_cluster" "redis" {
   num_cache_nodes      = 1
   parameter_group_name = "default.redis7"
   subnet_group_name    = aws_elasticache_subnet_group.elastic_cache_subnet_group.name
-  
+  apply_immediately    = true
   security_group_ids = [aws_security_group.elastic_cache_sg.id]
 
   tags = var.tags
