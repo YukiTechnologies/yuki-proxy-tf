@@ -67,7 +67,7 @@ resource "aws_vpc_endpoint_service_allowed_principal" "same_account" {
   principal_arn           = "arn:aws:iam::${var.private_link_config.aws_account_id}:root"
 }
 
-resource "kubectl_manifest" "private_target_group_binding" {
+resource "kubernetes_manifest" "private_target_group_binding" {
   yaml_body = templatefile("${path.module}/target_group_binding.yaml.tftpl", {
     app_name        = var.app_name
     namespace       = var.namespace
