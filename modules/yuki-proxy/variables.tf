@@ -10,10 +10,6 @@ variable "private_certificate_arn" {
   type = string
 }
 
-variable "ingress_class_name" {
-  type = string
-}
-
 variable "proxy_environment_variables" {
   type = map(string)
 }
@@ -23,10 +19,6 @@ variable "namespace" {
 }
 
 variable "load_balancer_name" {
-  type = string
-}
-
-variable "ingress_name" {
   type = string
 }
 
