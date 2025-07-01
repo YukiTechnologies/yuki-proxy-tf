@@ -59,6 +59,17 @@ module "elasticache" {
   tags                = var.tags
 }
 
+module "elasticache" {
+  source = "./modules/elastic-cache"
+  providers = {
+    aws = aws.default
+  }
+  private_subnets_ids = module.vpc.private_subnets
+  vpc_id              = module.vpc.vpc_id
+  vpc_cidr_block      = module.vpc.vpc_cidr_block
+  tags                = var.tags
+}
+
 locals {
   private_proxy_alb = "yuki"
 }
