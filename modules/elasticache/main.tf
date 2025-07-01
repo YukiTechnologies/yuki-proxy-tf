@@ -77,6 +77,10 @@ resource "aws_elasticache_replication_group" "valkey_cluster" {
   num_node_groups         = 2
   replicas_per_node_group = 2
 
+  lifecycle {
+    ignore_changes = [num_node_groups, replicas_per_node_group]
+  }
+
   apply_immediately = true
 }
 

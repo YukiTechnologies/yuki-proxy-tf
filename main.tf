@@ -57,6 +57,7 @@ module "elasticache" {
   vpc_cidr_block      = module.vpc.vpc_cidr_block
   node_type           = var.elasticache_node_type
   tags                = var.tags
+  depends_on = [module.vpc]
 }
 
 locals {
@@ -89,7 +90,7 @@ module "yuki_proxy" {
   compute_host                 = var.proxy_environment_variables.COMPUTE_HOST
   proxy_min_replicas           = var.proxy_min_replicas
   proxy_max_replicas           = var.proxy_max_replicas
-  depends_on = [module.ingress_class, module.elastic_cache]
+  depends_on = [module.ingress_class, module.elasticache, module.eks]
 }
 
 module "data_dog" {
