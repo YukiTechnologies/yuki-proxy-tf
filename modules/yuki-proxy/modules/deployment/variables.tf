@@ -30,7 +30,7 @@ variable "proxy_environment_variables" {
   type        = map(string)
 }
 
-variable "elastic_cache_endpoint" {
+variable "elasticache_endpoint" {
   type = string
 }
 

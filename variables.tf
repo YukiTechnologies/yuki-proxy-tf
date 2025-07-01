@@ -145,5 +145,5 @@ variable "eks_nodes" {
 
 variable "elasticache_node_type" {
   type = string
-  default = "cache.t4g.medium"
+  default = "cache.m7g.large"
 }

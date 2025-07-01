@@ -41,7 +41,7 @@ module "system_monitoring_job" {
   cron_name   = "yuki-system-monitoring"
   image       = "406122784773.dkr.ecr.us-east-1.amazonaws.com/system-monitoring-job:0.0.3"
   namespace   = var.namespace
-  redis_host  = var.elastic_cache_endpoint_url
+  redis_host  = var.elasticache_endpoint_url
   depends_on = [kubernetes_namespace.namespace]
 }
 
@@ -66,7 +66,7 @@ module "yuki_enabled_proxy_deployment" {
   deployment_replicas         = var.proxy_min_replicas
   proxy_enabled               = "true"
   proxy_environment_variables = var.proxy_environment_variables
-  elastic_cache_endpoint      = var.elastic_cache_endpoint_url
+  elasticache_endpoint      = var.elasticache_endpoint_url
   redis_key_name              = "enb-redis-encryption-key"
 
   depends_on = [kubernetes_namespace.namespace]

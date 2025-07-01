@@ -42,7 +42,7 @@ variable "path" {
   default = "/"
 }
 
-variable "elastic_cache_endpoint_url" {
+variable "elasticache_endpoint_url" {
   type = string
 }
 

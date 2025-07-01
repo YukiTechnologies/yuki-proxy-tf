@@ -95,7 +95,7 @@ resource "kubernetes_deployment" "yuki-proxy" {
           }
           env {
             name = "REDIS_HOST"
-            value = var.elastic_cache_endpoint
+            value = var.elasticache_endpoint
           }
           env {
             name = "ASPNETCORE_ENVIRONMENT"

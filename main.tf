@@ -47,8 +47,8 @@ module "ingress_class" {
   depends_on = [module.aws_alb_controller]
 }
 
-module "elastic_cache" {
-  source = "./modules/elastic-cache"
+module "elasticache" {
+  source = "./modules/elasticache"
   providers = {
     aws = aws.default
   }
@@ -84,7 +84,7 @@ module "yuki_proxy" {
   public_certificate_arn       = var.public_domain != null ? var.public_domain.certificate_arn : null
   container_image              = var.container_image
   proxy_environment_variables  = var.proxy_environment_variables
-  elastic_cache_endpoint_url   = module.elastic_cache.endpoint_url
+  elasticache_endpoint_url   = module.elasticache.endpoint_url
   system_host                  = var.proxy_environment_variables.SYSTEM_HOST
   compute_host                 = var.proxy_environment_variables.COMPUTE_HOST
   proxy_min_replicas           = var.proxy_min_replicas
