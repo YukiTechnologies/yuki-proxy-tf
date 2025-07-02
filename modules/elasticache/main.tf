@@ -70,7 +70,7 @@ resource "aws_elasticache_replication_group" "valkey_cluster" {
   port                       = 6379
   multi_az_enabled           = true
   automatic_failover_enabled = true
-  transit_encryption_enabled = true
+  transit_encryption_enabled = false
   at_rest_encryption_enabled = true
   tags                       = local.valkey_tags
 
