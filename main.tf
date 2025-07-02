@@ -67,6 +67,7 @@ module "elastic_cache" {
   private_subnets_ids = module.vpc.private_subnets
   vpc_id              = module.vpc.vpc_id
   vpc_cidr_block      = module.vpc.vpc_cidr_block
+  node_type           = var.elastic_cache_node_type
   tags                = var.tags
 }
 
@@ -100,7 +101,7 @@ module "yuki_proxy" {
   compute_host                 = var.proxy_environment_variables.COMPUTE_HOST
   proxy_min_replicas           = var.proxy_min_replicas
   proxy_max_replicas           = var.proxy_max_replicas
-  depends_on = [module.ingress_class, module.elasticache, module.eks]
+  depends_on = [module.ingress_class, module.elastic_cache, module.eks]
 }
 
 module "data_dog" {
