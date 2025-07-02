@@ -9,15 +9,11 @@ data "aws_elasticache_cluster" "source_db" {
 }
 
 data "aws_elasticache_replication_group" "dest_db" {
-  cluster_id = var.destination_cluster_id
+  replication_group_id = var.destination_cluster_id
 }
 
 data "aws_elasticache_subnet_group" "source_subnet" {
   name = data.aws_elasticache_cluster.source_db.subnet_group_name
-}
-
-data "aws_elasticache_subnet_group" "dest_subnet" {
-  name = data.aws_elasticache_cluster.dest_db.subnet_group_name
 }
 
 locals {
@@ -29,10 +25,8 @@ locals {
   }
 
   dest_db = {
-    vpc_id         = data.aws_elasticache_subnet_group.dest_subnet.vpc_id
-    subnet_id      = tolist(data.aws_elasticache_subnet_group.dest_subnet.subnet_ids)[0]
-    security_group = tolist(data.aws_elasticache_cluster.dest_db.security_group_ids)[0]
-    endpoint       = data.aws_elasticache_cluster.dest_db.configuration_endpoint_address
+    security_group = var.destination_cluster_sg_id
+    endpoint       = data.aws_elasticache_replication_group.dest_db.configuration_endpoint_address
   }
 }
 
@@ -54,7 +48,7 @@ resource "aws_security_group" "shake_sg" {
   }
 }
 
-resource "aws_security_group_rule" "allow_ec2_to_elasticache" {
+resource "aws_security_group_rule" "allow_ec2_to_elasticache_source" {
   type                     = "ingress"
   from_port                = 6379
   to_port                  = 6379
@@ -64,7 +58,7 @@ resource "aws_security_group_rule" "allow_ec2_to_elasticache" {
   description              = "Allow Redis-Shake EC2 to connect to ElastiCache"
 }
 
-resource "aws_security_group_rule" "allow_ec2_to_elasticache" {
+resource "aws_security_group_rule" "allow_ec2_to_elasticache_dest" {
   type                     = "ingress"
   from_port                = 6379
   to_port                  = 6379
@@ -92,5 +86,7 @@ resource "aws_instance" "shake_runner" {
     http_endpoint = "enabled"
   }
 
-  depends_on = [aws_security_group_rule.allow_ec2_to_elasticache]
+  depends_on = [
+    aws_security_group_rule.allow_ec2_to_elasticache_source, aws_security_group_rule.allow_ec2_to_elasticache_dest
+  ]
 }
