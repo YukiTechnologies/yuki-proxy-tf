@@ -57,7 +57,6 @@ module "elasticache" {
   vpc_cidr_block      = module.vpc.vpc_cidr_block
   node_type           = var.elasticache_node_type
   tags                = var.tags
-  depends_on = [module.vpc]
 }
 
 locals {

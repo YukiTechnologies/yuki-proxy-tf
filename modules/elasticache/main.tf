@@ -6,8 +6,6 @@ terraform {
   }
 }
 
-data "aws_availability_zones" "azs" {}
-
 locals {
   valkey_tags = merge({
     Name = var.cluster_id
