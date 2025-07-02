@@ -10,7 +10,7 @@ terraform {
       source = "gavinbunney/kubectl"
     }
     helm = {
-      source = "hashicorp/helm"
+      source  = "hashicorp/helm"
       version = ">= 2.16, < 3.0"
     }
   }
@@ -66,7 +66,7 @@ module "yuki_enabled_proxy_deployment" {
   deployment_replicas         = var.proxy_min_replicas
   proxy_enabled               = "true"
   proxy_environment_variables = var.proxy_environment_variables
-  elasticache_endpoint      = var.elasticache_endpoint_url
+  elasticache_endpoint        = var.elasticache_endpoint_url
   redis_key_name              = "enb-redis-encryption-key"
 
   depends_on = [kubernetes_namespace.namespace]
