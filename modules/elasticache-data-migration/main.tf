@@ -59,6 +59,7 @@ resource "aws_security_group_rule" "allow_ec2_to_elasticache_source" {
 }
 
 resource "aws_security_group_rule" "allow_ec2_to_elasticache_dest" {
+  count                    = local.source_db.security_group != local.dest_db.security_group ? 1 : 0
   type                     = "ingress"
   from_port                = 6379
   to_port                  = 6379

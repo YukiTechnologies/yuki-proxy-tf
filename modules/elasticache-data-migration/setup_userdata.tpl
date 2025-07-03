@@ -26,6 +26,9 @@ password = ""
 cluster = true
 address = "${to_address}:6379"
 password = ""
+
+[advanced]
+rdb_restore_command_behavior = "rewrite"
 EOF
 
 # Build & run
