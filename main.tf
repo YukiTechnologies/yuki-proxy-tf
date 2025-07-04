@@ -59,6 +59,18 @@ module "elasticache" {
   tags                = var.tags
 }
 
+module "elastic_cache" {
+  source = "./modules/elastic-cache"
+  providers = {
+    aws = aws.default
+  }
+  private_subnets_ids = module.vpc.private_subnets
+  vpc_id              = module.vpc.vpc_id
+  vpc_cidr_block      = module.vpc.vpc_cidr_block
+  node_type           = var.elastic_cache_node_type
+  tags                = var.tags
+}
+
 locals {
   private_proxy_alb = "yuki"
 }
@@ -84,12 +96,12 @@ module "yuki_proxy" {
   public_certificate_arn       = var.public_domain != null ? var.public_domain.certificate_arn : null
   container_image              = var.container_image
   proxy_environment_variables  = var.proxy_environment_variables
-  elasticache_endpoint_url   = module.elasticache.endpoint_url
+  elasticache_endpoint_url     = module.elastic_cache.endpoint_url
   system_host                  = var.proxy_environment_variables.SYSTEM_HOST
   compute_host                 = var.proxy_environment_variables.COMPUTE_HOST
   proxy_min_replicas           = var.proxy_min_replicas
   proxy_max_replicas           = var.proxy_max_replicas
-  depends_on = [module.ingress_class, module.elasticache, module.eks]
+  depends_on = [module.ingress_class, module.elastic_cache, module.eks]
 }
 
 module "data_dog" {

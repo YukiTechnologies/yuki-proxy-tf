@@ -143,6 +143,11 @@ variable "eks_nodes" {
   }
 }
 
+variable "elastic_cache_node_type" {
+  type    = string
+  default = "cache.r6g.2xlarge"
+}
+
 variable "elasticache_node_type" {
   type = string
   default = "cache.m7g.large"
