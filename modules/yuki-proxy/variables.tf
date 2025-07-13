@@ -92,7 +92,3 @@ variable "proxy_min_replicas" {
 variable "proxy_max_replicas" {
   type = number
 }
-
-variable "ingress_class_name" {
-  type = string
-}

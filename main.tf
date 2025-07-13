@@ -89,7 +89,6 @@ module "yuki_proxy" {
   compute_host                 = var.proxy_environment_variables.COMPUTE_HOST
   proxy_min_replicas           = var.proxy_min_replicas
   proxy_max_replicas           = var.proxy_max_replicas
-  ingress_class_name           = var.ingress_class_name
   depends_on = [module.ingress_class, module.elasticache, module.eks]
 }
 
