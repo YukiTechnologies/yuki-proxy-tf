@@ -1,6 +1,7 @@
 provider "aws" {
   profile = var.profile
   region  = var.main_region
+  version = "~> 5.81.0"
 }
 
 provider "kubernetes" {

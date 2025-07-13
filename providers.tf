@@ -36,5 +36,6 @@ provider "helm" {
 provider "aws" {
   profile = var.aws.profile
   region  = var.aws.region
+  version = "~> 5.81.0"
   alias = "default"
 }
