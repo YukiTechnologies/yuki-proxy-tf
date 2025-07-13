@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~> 5.81.0"
     }
     kubernetes = {
@@ -73,35 +73,63 @@ module "yuki_enabled_proxy_deployment" {
   depends_on = [kubernetes_namespace.namespace]
 }
 
-module "yuki_proxy_private_alb" {
-  source             = "./modules/alb"
+module "yuki_proxy_private_ingress" {
+  source             = "./modules/new-ingress"
   count              = var.create_private_load_balancer ? 1 : 0
-  internal           = true
-  vpc_id             = var.vpc_id
-  subnet_ids         = var.private_subnet_ids
+  ingress_type       = "internal"
+  namespace          = var.namespace
   app_name           = local.proxy_name
   app_port           = var.app_port
-  namespace          = var.namespace
-  load_balancer_name = var.load_balancer_name
   certificate_arn    = var.private_certificate_arn
+  ingress_class_name = var.ingress_class_name
+  ingress_name       = "ingress-${local.proxy_name}"
+  load_balancer_name = var.load_balancer_name
   path               = var.path
-  depends_on = [kubernetes_namespace.namespace]
 }
 
-module "yuki_proxy_public_alb" {
-  source             = "./modules/alb"
+module "yuki_proxy_public_ingress" {
+  source             = "./modules/new-ingress"
   count              = var.create_public_load_balancer ? 1 : 0
-  internal           = false
-  vpc_id             = var.vpc_id
-  subnet_ids         = var.public_subnet_ids
+  ingress_type       = "internet-facing"
+  namespace          = var.namespace
   app_name           = local.proxy_name
   app_port           = var.app_port
-  namespace          = var.namespace
-  load_balancer_name = var.load_balancer_name
   certificate_arn    = var.public_certificate_arn
+  ingress_class_name = var.ingress_class_name
+  ingress_name       = "pub-ingress-${local.proxy_name}"
+  load_balancer_name = var.load_balancer_name
   path               = var.path
-  depends_on = [kubernetes_namespace.namespace]
 }
+
+# module "yuki_proxy_private_alb" {
+#   source             = "./modules/alb"
+#   count              = var.create_private_load_balancer ? 1 : 0
+#   internal           = true
+#   vpc_id             = var.vpc_id
+#   subnet_ids         = var.private_subnet_ids
+#   app_name           = local.proxy_name
+#   app_port           = var.app_port
+#   namespace          = var.namespace
+#   load_balancer_name = var.load_balancer_name
+#   certificate_arn    = var.private_certificate_arn
+#   path               = var.path
+#   depends_on = [kubernetes_namespace.namespace]
+# }
+# 
+# module "yuki_proxy_public_alb" {
+#   source             = "./modules/alb"
+#   count              = var.create_public_load_balancer ? 1 : 0
+#   internal           = false
+#   vpc_id             = var.vpc_id
+#   subnet_ids         = var.public_subnet_ids
+#   app_name           = local.proxy_name
+#   app_port           = var.app_port
+#   namespace          = var.namespace
+#   load_balancer_name = var.load_balancer_name
+#   certificate_arn    = var.public_certificate_arn
+#   path               = var.path
+#   depends_on = [kubernetes_namespace.namespace]
+# }
 
 module "yuki_proxy_private_link" {
   source              = "./modules/nlb"
