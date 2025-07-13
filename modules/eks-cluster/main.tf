@@ -69,7 +69,7 @@ resource "aws_iam_policy" "secrets_manager_policy" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.31.4"
+  version = "20.32.0"
 
   cluster_name = var.cluster_name
   cluster_version = "1.31"
