@@ -1,0 +1,19 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: ${app_name}-${type}-tgb
+  namespace: ${namespace}
+spec:
+  serviceRef:
+    name: ${app_name}
+    port: ${app_port}
+  targetGroupARN: ${target_group_arn}
+  targetType: ip
+  networking:
+    ingress:
+    - from:
+      - securityGroup:
+          groupID: ${security_group_id}
+      ports:
+      - port: ${app_port}
+        protocol: TCP
