@@ -96,12 +96,12 @@ module "yuki_proxy" {
   public_certificate_arn       = var.public_domain != null ? var.public_domain.certificate_arn : null
   container_image              = var.container_image
   proxy_environment_variables  = var.proxy_environment_variables
-  elasticache_endpoint_url     = module.elastic_cache.endpoint_url
+  elasticache_endpoint_url     = module.elasticache.endpoint_url
   system_host                  = var.proxy_environment_variables.SYSTEM_HOST
   compute_host                 = var.proxy_environment_variables.COMPUTE_HOST
   proxy_min_replicas           = var.proxy_min_replicas
   proxy_max_replicas           = var.proxy_max_replicas
-  depends_on = [module.ingress_class, module.elastic_cache, module.eks]
+  depends_on = [module.ingress_class, module.elasticache, module.eks]
 }
 
 module "data_dog" {
