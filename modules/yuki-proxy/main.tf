@@ -40,7 +40,7 @@ module "system_monitoring_job" {
   system_url  = "${var.system_host}/health"
   compute_url = "${var.compute_host}/compute/health"
   cron_name   = "yuki-system-monitoring"
-  image       = "406122784773.dkr.ecr.us-east-1.amazonaws.com/system-monitoring-job:0.0.15"
+  image       = "406122784773.dkr.ecr.us-east-1.amazonaws.com/system-monitoring-job:0.0.16"
   namespace   = var.namespace
   redis_host  = var.elasticache_endpoint_url
   depends_on = [kubernetes_namespace.namespace]
