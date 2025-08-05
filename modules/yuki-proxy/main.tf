@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = ">= 5.81.0, < 6.0.0"
     }
     kubernetes = {
@@ -17,11 +17,6 @@ terraform {
   }
 }
 
-resource "kubernetes_namespace" "namespace" {
-  metadata {
-    name = var.namespace
-  }
-}
 
 locals {
   proxy_name = "yuki-proxy"
@@ -35,43 +30,67 @@ resource "helm_release" "metrics_server" {
   version    = "3.12.0"
 }
 
-module "system_monitoring_job" {
-  source      = "./modules/system-monitoring"
-  system_url  = "${var.system_host}/health"
-  compute_url = "${var.compute_host}/compute/health"
-  cron_name   = "yuki-system-monitoring"
-  image       = "406122784773.dkr.ecr.us-east-1.amazonaws.com/system-monitoring-job:0.0.16"
-  namespace   = var.namespace
-  redis_host  = var.elasticache_endpoint_url
-  depends_on = [kubernetes_namespace.namespace]
+resource "helm_release" "yuki_helm_chart" {
+  name       = "yuki"
+  repository = "https://yukitechnologies.github.io/yuki-proxy-chart"
+  chart      = "proxy"
+  namespace  = var.namespace
+  version    = var.yuki_helm_chart_version
+
+  create_namespace = true
+
+  values = [
+    yamlencode({
+      app = {
+        name         = local.proxy_name
+        group        = var.app_group
+        replicaCount = var.proxy_min_replicas
+        container = {
+          image = var.container_image
+          port = tonumber(var.app_port)
+          env = merge({
+            ASPNETCORE_ENVIRONMENT = "Prod"
+            REDIS_HOST             = var.elasticache_endpoint_url
+            PROXY_ENABLED          = "true"
+            COMPUTE_HOST           = var.compute_host
+            SYSTEM_HOST            = var.system_host
+          }, var.proxy_environment_variables)
+        }
+        service = {
+          type = "NodePort"
+          port = tonumber(var.app_port)
+          targetPort = tonumber(var.app_port)
+        }
+      }
+
+      redisSecret = {
+        create = true
+      }
+      hpa = {
+        enabled                            = true
+        minReplicas                       = var.proxy_min_replicas
+        maxReplicas                       = var.proxy_max_replicas
+        targetCPUUtilizationPercentage    = 40
+        targetMemoryUtilizationPercentage = 40
+      }
+      
+      ingress = {
+        enabled = false
+      }
+      
+      resources = {
+        requests = {
+          cpu    = "1000m"
+          memory = "500Mi"
+        }
+        limits = {
+          memory = "1Gi"
+        }
+      }
+    })
+  ]
 }
 
-module "yuki_enabled_proxy_service" {
-  source = "./modules/service"
-
-  namespace = var.namespace
-  app_group = var.app_group
-  app_name  = local.proxy_name
-  app_port  = var.app_port
-  depends_on = [kubernetes_namespace.namespace]
-}
-
-module "yuki_enabled_proxy_deployment" {
-  source = "./modules/deployment"
-
-  namespace                   = var.namespace
-  app_group                   = var.app_group
-  app_name                    = local.proxy_name
-  app_port                    = var.app_port
-  container_image             = var.container_image
-  deployment_replicas         = var.proxy_min_replicas
-  proxy_enabled               = "true"
-  proxy_environment_variables = var.proxy_environment_variables
-  elasticache_endpoint        = var.elasticache_endpoint_url
-  redis_key_name              = "enb-redis-encryption-key"
-
-  depends_on = [kubernetes_namespace.namespace]
-}
 
 module "yuki_proxy_private_alb" {
   source             = "./modules/alb"
@@ -85,7 +104,7 @@ module "yuki_proxy_private_alb" {
   load_balancer_name = var.load_balancer_name
   certificate_arn    = var.private_certificate_arn
   path               = var.path
-  depends_on = [kubernetes_namespace.namespace]
+  depends_on = [helm_release.yuki_helm_chart]
 }
 
 module "yuki_proxy_public_alb" {
@@ -100,7 +119,7 @@ module "yuki_proxy_public_alb" {
   load_balancer_name = var.load_balancer_name
   certificate_arn    = var.public_certificate_arn
   path               = var.path
-  depends_on = [kubernetes_namespace.namespace]
+  depends_on = [helm_release.yuki_helm_chart]
 }
 
 module "yuki_proxy_private_link" {
@@ -115,15 +134,6 @@ module "yuki_proxy_private_link" {
   vpc_id              = var.vpc_id
   vpc_cidr            = var.vpc_cidr
   certificate_arn     = var.private_certificate_arn
-  depends_on = [kubernetes_namespace.namespace]
+  depends_on = [helm_release.yuki_helm_chart]
 }
 
-module "yuki_enabled_proxy_hpa" {
-  source                 = "./modules/hpa"
-  min_replicas           = var.proxy_min_replicas
-  max_replicas           = var.proxy_max_replicas
-  target_cpu_utilization = 30
-  namespace              = var.namespace
-  app_name               = local.proxy_name
-  depends_on = [kubernetes_namespace.namespace]
-}

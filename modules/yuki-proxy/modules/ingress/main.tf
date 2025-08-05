@@ -22,6 +22,21 @@ resource "kubernetes_ingress_v1" "ingress" {
     }
   }
 
+    #? alb.ingress.kubernetes.io/scheme: internet-facing
+
+    #   alb.ingress.kubernetes.io/load-balancer-name: prd-load-balancer
+    #   alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    #   alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-1:406122784773:certificate/a6416c9e-922d-4833-9c2c-0a1edb7f0ea9
+    #   alb.ingress.kubernetes.io/ssl-redirect: '443'
+    #   alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    #   alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    #   alb.ingress.kubernetes.io/healthcheck-path: /health
+    #   alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
+    #   alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
+    #   alb.ingress.kubernetes.io/success-codes: '200'
+    #   alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    #   alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
+
   spec {
     ingress_class_name = var.ingress_class_name
     rule {
