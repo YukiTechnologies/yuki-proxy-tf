@@ -15,3 +15,15 @@ variable "instance_type" {
   type        = string
   default     = "t3.medium"
 }
+
+variable "target_vpc_id" {
+  description = "VPC ID where to run the migration instance (usually destination VPC)"
+  type        = string
+  default     = null
+}
+
+variable "target_subnet_id" {
+  description = "Subnet ID where to run the migration instance"
+  type        = string
+  default     = null
+}

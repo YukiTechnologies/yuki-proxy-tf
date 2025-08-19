@@ -38,7 +38,7 @@ data "aws_ssm_parameter" "ecs_ami" {
 resource "aws_security_group" "shake_sg" {
   name        = "redis_shake_sg"
   description = "Allow outbound and ElastiCache access for Redis-Shake EC2"
-  vpc_id      = local.source_db.vpc_id
+  vpc_id      = var.target_vpc_id != null ? var.target_vpc_id : local.source_db.vpc_id
 
   egress {
     from_port = 0
@@ -48,31 +48,51 @@ resource "aws_security_group" "shake_sg" {
   }
 }
 
+# Get the CIDR block of the target VPC to allow cross-VPC access
+data "aws_vpc" "target_vpc" {
+  count = var.target_vpc_id != null ? 1 : 0
+  id    = var.target_vpc_id
+}
+
 resource "aws_security_group_rule" "allow_ec2_to_elasticache_source" {
-  type                     = "ingress"
-  from_port                = 6379
-  to_port                  = 6379
-  protocol                 = "tcp"
-  security_group_id        = local.source_db.security_group
-  source_security_group_id = aws_security_group.shake_sg.id
-  description              = "Allow Redis-Shake EC2 to connect to ElastiCache"
+  type              = "ingress"
+  from_port         = 6379
+  to_port           = 6379
+  protocol          = "tcp"
+  security_group_id = local.source_db.security_group
+  
+  # If running in a different VPC, use CIDR blocks, otherwise use security group
+  cidr_blocks                = var.target_vpc_id != null ? [data.aws_vpc.target_vpc[0].cidr_block] : null
+  source_security_group_id   = var.target_vpc_id != null ? null : aws_security_group.shake_sg.id
+  
+  description = "Allow Redis-Shake EC2 to connect to ElastiCache"
+}
+
+# Get the CIDR block of the source VPC for destination access
+data "aws_vpc" "source_vpc" {
+  count = var.target_vpc_id == null ? 1 : 0
+  id    = local.source_db.vpc_id
 }
 
 resource "aws_security_group_rule" "allow_ec2_to_elasticache_dest" {
-  count                    = local.source_db.security_group != local.dest_db.security_group ? 1 : 0
-  type                     = "ingress"
-  from_port                = 6379
-  to_port                  = 6379
-  protocol                 = "tcp"
-  security_group_id        = local.dest_db.security_group
-  source_security_group_id = aws_security_group.shake_sg.id
-  description              = "Allow Redis-Shake EC2 to connect to ElastiCache"
+  count             = local.source_db.security_group != local.dest_db.security_group ? 1 : 0
+  type              = "ingress"
+  from_port         = 6379
+  to_port           = 6379
+  protocol          = "tcp"
+  security_group_id = local.dest_db.security_group
+  
+  # If running in same VPC as source, use security group; otherwise use CIDR
+  cidr_blocks                = var.target_vpc_id == null ? [data.aws_vpc.source_vpc[0].cidr_block] : null
+  source_security_group_id   = var.target_vpc_id == null ? null : aws_security_group.shake_sg.id
+  
+  description = "Allow Redis-Shake EC2 to connect to ElastiCache"
 }
 
 resource "aws_instance" "shake_runner" {
   ami           = data.aws_ssm_parameter.ecs_ami.value
   instance_type = var.instance_type
-  subnet_id     = local.source_db.subnet_id
+  subnet_id     = var.target_subnet_id != null ? var.target_subnet_id : local.source_db.subnet_id
   security_groups = [aws_security_group.shake_sg.id]
   user_data = templatefile("${path.module}/setup_userdata.tpl", {
     from_address = local.source_db.endpoint
