@@ -22,6 +22,11 @@ variable "load_balancer_name" {
   type = string
 }
 
+variable "yuki_helm_chart_version" {
+  type = string
+  default = "0.0.43"
+}
+
 variable "app_group" {
   type    = string
   default = "default-app-group"
@@ -30,11 +35,6 @@ variable "app_group" {
 variable "app_port" {
   type    = string
   default = "5162"
-}
-
-variable "deployment_replicas" {
-  type    = string
-  default = "5"
 }
 
 variable "path" {
